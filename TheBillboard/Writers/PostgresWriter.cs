@@ -10,7 +10,7 @@ public class PostgresWriter : IWriter
 
     public PostgresWriter(IOptions<ConnectionStringOptions> options)
     {
-        _connectionString = options.Value.DefaultDatabase;
+        _connectionString = options.Value.PostgreDatabase;
     }
 
     public async Task<bool> WriteAsync<TEntity>(string query, TEntity entity)

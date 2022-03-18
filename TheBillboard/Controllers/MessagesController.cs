@@ -31,9 +31,9 @@ public class MessagesController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create(int? id)
+    public async Task<IActionResult> Create(int? id)
     {
-        var message = id is not null ? _messageGateway.GetById((int)id) : new Message();
+        var message = id is not null ? await _messageGateway.GetById((int)id)! : new Message();
 
         if (message is null)
         {
@@ -67,9 +67,9 @@ public class MessagesController : Controller
         return RedirectToAction("Index");
     }
 
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(int id)
     {
-        var message = _messageGateway.GetById(id);
+        var message = await _messageGateway.GetById(id)!;
         if (message is null)
         {
             return View("Error");

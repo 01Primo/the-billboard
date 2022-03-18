@@ -22,8 +22,10 @@ builder.Services
 builder.Services.AddSingleton<IStudentGateway, StudentStudentGateway>();
 builder.Services.AddSingleton<IMessageGateway, MessageGateway>();
 builder.Services.AddSingleton<IAuthorGateway, AuthorGateway>();
-builder.Services.AddSingleton<IReader, PostgresReader>();
-builder.Services.AddSingleton<IWriter, PostgresWriter>();
+builder.Services.AddSingleton<IReader, SqlReader>();
+builder.Services.AddSingleton<IWriter, SqlWriter>();
+
+// se vuoi farlo girare su postgre devi solo cambiare i servizi
 
 builder.Services.AddControllersWithViews();
 

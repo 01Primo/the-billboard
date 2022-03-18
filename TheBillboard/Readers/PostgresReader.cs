@@ -14,10 +14,10 @@ public class PostgresReader : IReader
 
     public PostgresReader(IOptions<ConnectionStringOptions> options)
     {
-        _connectionString = options.Value.DefaultDatabase;
+        _connectionString = options.Value.PostgreDatabase;
     }
 
-    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<NpgsqlDataReader, TEntity> selector)
+    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector)
     {
         var messages = new HashSet<TEntity>(); 
         
