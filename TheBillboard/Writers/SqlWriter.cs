@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Data;
 using System.Data.SqlClient;
 using TheBillboard.Options;
 
@@ -13,21 +14,42 @@ public class SqlWriter : IWriter
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<bool> WriteAsync<TEntity>(string query, TEntity entity)
+    public async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
     {
-        query = @"INSERT INTO public.""Message""(""Title"", ""Body"", ""CreatedAt"", ""UpdatedAt"", ""AuthorId"") VALUES (@Title, @Body, '2022-03-17 00:00:00.000000', '2022-03-17 00:00:00.000000', 4)";
 
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(query, connection);
 
-        command.Parameters.Add(new SqlParameter("Title", "Title 1"));
-        command.Parameters.Add(new SqlParameter("Body", "Body 1"));
 
+        foreach (var item in parameters)
+        {
+
+            var newParameter = new SqlParameter(item.Item1, typeMap[item.Item2.GetType()]);
+            newParameter.Value = item.Item2;
+            if (item.Item2 is String)
+                newParameter.Size = (item.Item2 as String).Length;
+
+            command.Parameters.Add(newParameter);
+        }
         await connection.OpenAsync();
+        try
+        {
+            await command.PrepareAsync();
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
 
-        await command.PrepareAsync();
-        await command.ExecuteNonQueryAsync();
 
         return true;
     }
+    static Dictionary<Type, SqlDbType> typeMap = new()
+    {
+        [typeof(int)] = SqlDbType.Int,
+        [typeof(string)] = SqlDbType.NVarChar,
+        [typeof(DateTime)] = SqlDbType.DateTime
+    };
 }
+

@@ -19,22 +19,32 @@ public class MessageGateway : IMessageGateway
 
     public Task<IEnumerable<Message>> GetAll()
     {
-        const string query = "select * from Message M join Author A on A.Id = M.AuthorId";       
+        const string query = "select * from Message M join Author A on A.Id = M.AuthorId";
         return _reader.QueryAsync(query, Map);
     }
 
     public async Task<Message>? GetById(int id)
     {
-        var query = $"select * from Message M join Author A on A.Id = M.AuthorId where M.Id = {id}";       
+        var query = $"select * from Message M join Author A on A.Id = M.AuthorId where M.Id = {id}";
         var message = await _reader.QueryAsync(query, Map);
-        return message.ToList()[0];
+        return message.ToList().First();
     }
 
     public Task<bool> Create(Message message)
     {
-        //TODO
-        var query = string.Empty;
-        return _writer.WriteAsync<Message>(query, message);
+        const string query = $"INSERT INTO [dbo].[Message] ([Title],[Body],[CreatedAt],[UpdatedAt],[AuthorId])" +
+            $"VALUES(@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
+
+        var parametersTuple = new List<(string Name, object Value)>
+        {
+            (@"Title", message.Title),
+            (@"Body", message.Body),
+            (@"CreatedAt", DateTime.Now),
+            (@"UpdatedAt", DateTime.Now),
+            (@"AuthorId", message.AuthorId)
+        };
+        
+        return _writer.WriteAsync(query, parametersTuple);
     }
 
     public void Delete(int id)

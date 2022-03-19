@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Npgsql;
+using System.Data;
 using TheBillboard.Options;
 
 namespace TheBillboard.Writers;
@@ -13,7 +14,7 @@ public class PostgresWriter : IWriter
         _connectionString = options.Value.PostgreDatabase;
     }
 
-    public async Task<bool> WriteAsync<TEntity>(string query, TEntity entity)
+    public async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
     {
         query = @"INSERT INTO public.""Message""(""Title"", ""Body"", ""CreatedAt"", ""UpdatedAt"", ""AuthorId"") VALUES (@Title, @Body, '2022-03-17 00:00:00.000000', '2022-03-17 00:00:00.000000', 4)";
         
