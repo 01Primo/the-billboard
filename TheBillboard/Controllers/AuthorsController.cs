@@ -20,8 +20,9 @@ namespace TheBillboard.Controllers
         {
             var authors = _authorGateway.GetAll();
             var messages = _messageGateway.GetAll();
+
             var authorIndexViewModelList = new List<AuthorIndexViewModel>();
-            await foreach(var author in authors)           
+            await foreach (var author in authors)
             {
                 var isDeletable = !(await messages.AnyAsync(t => t.AuthorId == author.Id));
                 authorIndexViewModelList.Add(new AuthorIndexViewModel(author, isDeletable));
@@ -34,8 +35,7 @@ namespace TheBillboard.Controllers
         public async Task<IActionResult> Create(Author author)
         {
             if (!ModelState.IsValid)
-                return View();
-            
+                return View();            
 
             await _authorGateway.Create(author);
 
@@ -45,8 +45,7 @@ namespace TheBillboard.Controllers
         public async Task<IActionResult> Create(int? id)
         {
             if (id is not null)
-                return View(await _authorGateway.GetById((int)id)!);
-            
+                return View(await _authorGateway.GetById((int)id)!);            
 
             return View();
         }

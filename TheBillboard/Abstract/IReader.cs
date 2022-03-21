@@ -1,6 +1,4 @@
-﻿using Npgsql;
-using System.Data;
-using TheBillboard.Models;
+﻿using System.Data;
 
 namespace TheBillboard.Abstract;
 

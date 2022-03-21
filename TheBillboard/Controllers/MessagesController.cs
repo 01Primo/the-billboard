@@ -35,8 +35,8 @@ public class MessagesController : Controller
     {
         var message = id is not null ? await _messageGateway.GetById((int)id)! : new Message();
 
-        if (message is null)        
-            return View("Error");        
+        if (message is null)
+            return View("Error");
         else
         {
             var viewModel = new MessageCreationViewModel(message, _authorGateway.GetAll());
@@ -47,15 +47,13 @@ public class MessagesController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(Message message)
     {
-        if (!ModelState.IsValid)                    
+        if (!ModelState.IsValid)
             return View(new MessageCreationViewModel(message, _authorGateway.GetAll()));
-        
 
-        if (message.Id == default)        
-            await _messageGateway.Create(message);        
-        else        
+        if (message.Id == default)
+            await _messageGateway.Create(message);
+        else
             await _messageGateway.Update(message);
-        
 
         _logger.LogInformation($"Message received: {message.Title}");
         return RedirectToAction("Index");
