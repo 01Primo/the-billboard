@@ -15,9 +15,8 @@ namespace TheBillboard.Readers
             _connectionString = options.Value.DefaultDatabase;
         }
 
-        public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
+        public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
         {
-            var queryResults = new HashSet<TEntity>();
 
             await using var connection = new SqlConnection(_connectionString);
 
@@ -33,13 +32,11 @@ namespace TheBillboard.Readers
             while (await dr.ReadAsync())
             {
                 var queryResult = selector(dr);
-                queryResults.Add(queryResult);
+                yield return queryResult;
             }
 
             await connection.CloseAsync();
             await connection.DisposeAsync();
-
-            return queryResults;
         }
     }
 }

@@ -14,7 +14,7 @@ public class SqlWriter : IWriter
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
+    async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
     {
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(query, connection);
@@ -34,6 +34,10 @@ public class SqlWriter : IWriter
         await command.ExecuteNonQueryAsync();
 
         return true;
+    }
+    public async Task<bool> CreateAsync(string query, IEnumerable<(string, object)> parameters)
+    {
+        return await WriteAsync(query, parameters);
     }
 
     public async Task<bool> DeleteAsync(string query, IEnumerable<(string, object)> parameters)

@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>c16de19a-e3a5-4171-bd8a-d6f9a6c3b54b</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,5 +15,6 @@
     <ItemGroup>
       <PackageReference Include="Npgsql" Version="7.0.0-preview.2" />
       <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+      <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
 </Project>

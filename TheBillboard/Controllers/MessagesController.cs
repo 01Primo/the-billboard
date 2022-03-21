@@ -18,10 +18,10 @@ public class MessagesController : Controller
         _authorGateway = authorGateway;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var messages = await _messageGateway.GetAll();
-        var authors = await _authorGateway.GetAll();
+        var messages = _messageGateway.GetAll();
+        var authors = _authorGateway.GetAll();
 
         var messagesWithAuthor = messages.Select(message => MatchAuthorToMessage(message, authors));
 
@@ -41,7 +41,7 @@ public class MessagesController : Controller
         }
         else
         {
-            var viewModel = new MessageCreationViewModel(message, await _authorGateway.GetAll());
+            var viewModel = new MessageCreationViewModel(message, _authorGateway.GetAll());
             return View(viewModel);
         }
     }
@@ -51,7 +51,7 @@ public class MessagesController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(new MessageCreationViewModel(message, await _authorGateway.GetAll()));
+            return View(new MessageCreationViewModel(message, _authorGateway.GetAll()));
         }
 
         if (message.Id == default)
@@ -75,9 +75,8 @@ public class MessagesController : Controller
             return View("Error");
         }
 
-        var authors = await _authorGateway.GetAll();
-        var messageWithAuthor = MatchAuthorToMessage(message, authors);
-        return View(messageWithAuthor);
+        var author = await _authorGateway.GetById(message.AuthorId)!;
+        return View(new MessageWithAuthor(message, author));
     }
 
     public async Task<IActionResult> Delete(int id)
@@ -86,6 +85,6 @@ public class MessagesController : Controller
         return RedirectToAction("Index");
     }
 
-    private MessageWithAuthor MatchAuthorToMessage(Message message, IEnumerable<Author> authors)
-        => new MessageWithAuthor(message, authors.FirstOrDefault(a => a.Id == message.AuthorId, new Author("Unknown Author")));
+    private MessageWithAuthor MatchAuthorToMessage(Message message, IAsyncEnumerable<Author> authors)
+        => new MessageWithAuthor(message, authors.ToEnumerable().First(a => a.Id == message.AuthorId));
 }

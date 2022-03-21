@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using TheBillboard.Abstract;
 using TheBillboard.Models;
+using System.Linq;
 
 namespace TheBillboard.Gateways;
 
@@ -17,7 +18,7 @@ public class MessageGateway : IMessageGateway
         _writer = writer;
     }
 
-    public Task<IEnumerable<Message>> GetAll()
+    public IAsyncEnumerable<Message> GetAll()
     {
         const string query = "select * from Message M join Author A on A.Id = M.AuthorId";
         return _reader.QueryAsync(query, Map);
@@ -30,8 +31,8 @@ public class MessageGateway : IMessageGateway
         {
             (@"Id", id)
         };
-        var message = await _reader.QueryAsync(query, Map, parametersTuple);
-        return message.ToList().First();
+        var message = await _reader.QueryAsync(query, Map, parametersTuple).ToListAsync();
+        return message.First();
     }
 
     public Task<bool> Create(Message message)
@@ -48,7 +49,7 @@ public class MessageGateway : IMessageGateway
             (@"AuthorId", message.AuthorId)
         };
 
-        return _writer.WriteAsync(query, parametersTuple);
+        return _writer.CreateAsync(query, parametersTuple);
     }
 
     public async Task<bool> Delete(int id)

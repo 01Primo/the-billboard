@@ -24,7 +24,7 @@ public class PostgresWriter : IWriter
         throw new NotImplementedException();
     }
 
-    public async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
+    public async Task<bool> CreateAsync(string query, IEnumerable<(string, object)> parameters)
     {
         query = @"INSERT INTO public.""Message""(""Title"", ""Body"", ""CreatedAt"", ""UpdatedAt"", ""AuthorId"") VALUES (@Title, @Body, '2022-03-17 00:00:00.000000', '2022-03-17 00:00:00.000000', 4)";
         

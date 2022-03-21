@@ -15,7 +15,7 @@ namespace TheBillboard.Gateways
             _writer = writer;
         }
 
-        public Task<IEnumerable<Author>> GetAll()
+        public IAsyncEnumerable<Author> GetAll()
         {
             const string query = "select * from Author";
             return _reader.QueryAsync(query, Map);
@@ -25,11 +25,11 @@ namespace TheBillboard.Gateways
         {
             const string query = $"select * from Author where id = @Id";
             var parametersTuple = new List<(string Name, object Value)>
-        {
-            (@"Id", id)
-        };
-            var message = await _reader.QueryAsync(query, Map, parametersTuple);
-            return message.ToList().First();
+            {
+                (@"Id", id)
+            };
+            var result = await _reader.QueryAsync(query, Map, parametersTuple).ToListAsync();            
+            return result.First();
         }
 
         public Task<bool> Create(Author author)
@@ -41,7 +41,7 @@ namespace TheBillboard.Gateways
                 (@"Name", author.Name),
                 (@"Surname", author.Surname)
             };
-            return _writer.WriteAsync(query, parametersTuple);
+            return _writer.CreateAsync(query, parametersTuple);
         }
 
 

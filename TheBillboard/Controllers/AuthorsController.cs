@@ -1,21 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TheBillboard.Abstract;
 using TheBillboard.Models;
+using TheBillboard.ViewModels;
 
 namespace TheBillboard.Controllers
 {
     public class AuthorsController : Controller
     {
         private readonly IAuthorGateway _authorGateway;
+        private readonly IMessageGateway _messageGateway;
 
-        public AuthorsController(IAuthorGateway authorGateway)
+        public AuthorsController(IAuthorGateway authorGateway, IMessageGateway messageGateway)
         {
             _authorGateway = authorGateway;
+            _messageGateway = messageGateway;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _authorGateway.GetAll());
+            var authors = _authorGateway.GetAll();
+            var messages = _messageGateway.GetAll();
+            var authorIndexViewModelList = new List<AuthorIndexViewModel>();
+            await foreach(var author in authors)           
+            {
+                var isDeletable = !(await messages.AnyAsync(t => t.AuthorId == author.Id));
+                authorIndexViewModelList.Add(new AuthorIndexViewModel(author, isDeletable));
+            }
+
+            return View(authorIndexViewModelList);
         }
 
         [HttpPost]
