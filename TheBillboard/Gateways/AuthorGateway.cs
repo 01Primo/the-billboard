@@ -44,7 +44,6 @@ namespace TheBillboard.Gateways
             return _writer.CreateAsync(query, parametersTuple);
         }
 
-
         public async Task<bool> Delete(int id)
         {
             const string query = $"DELETE FROM [dbo].[Author] WHERE Id = @Id";
@@ -55,14 +54,13 @@ namespace TheBillboard.Gateways
             return await _writer.DeleteAsync(query, parametersTuple);
         }
 
-        Author Map(IDataReader dr)
+        private Author Map(IDataReader dr)
         {
             return new Author
             {
                 Id = dr["Id"] as int?,
                 Name = dr["name"].ToString()!,
-                Surname = dr["surname"].ToString()!,
-
+                Surname = dr["surname"].ToString()!
             };
         }
     }

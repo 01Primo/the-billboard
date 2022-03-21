@@ -9,12 +9,9 @@ public class SqlWriter : IWriter
 {
     private readonly string _connectionString;
 
-    public SqlWriter(IOptions<ConnectionStringOptions> options)
-    {
-        _connectionString = options.Value.DefaultDatabase;
-    }
+    public SqlWriter(IOptions<ConnectionStringOptions> options) => _connectionString = options.Value.DefaultDatabase;
 
-    async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
+    private async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
     {
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(query, connection);
@@ -35,29 +32,22 @@ public class SqlWriter : IWriter
 
         return true;
     }
-    public async Task<bool> CreateAsync(string query, IEnumerable<(string, object)> parameters)
-    {
-        return await WriteAsync(query, parameters);
-    }
+    public async Task<bool> CreateAsync(string query, IEnumerable<(string, object)> parameters) => await WriteAsync(query, parameters);
 
-    public async Task<bool> DeleteAsync(string query, IEnumerable<(string, object)> parameters)
-    {
-        return await WriteAsync(query, parameters);
-    }
+    public async Task<bool> DeleteAsync(string query, IEnumerable<(string, object)> parameters) => await WriteAsync(query, parameters);
 
-    public async Task<bool> UpdateAsync(string query, IEnumerable<(string, object)> parameters)
-    {
-        return await WriteAsync(query, parameters);
-    }
+    public async Task<bool> UpdateAsync(string query, IEnumerable<(string, object)> parameters) => await WriteAsync(query, parameters);
 
-    static Dictionary<Type, SqlDbType> typeMap = new()
+    private static Dictionary<Type, SqlDbType> typeMap = new()
     {
         [typeof(int)] = SqlDbType.Int,
         [typeof(string)] = SqlDbType.NVarChar,
         [typeof(DateTime)] = SqlDbType.DateTime
     };
 
-    //public async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
+    //Query without PrepareAsync method
+
+    //private async Task<bool> WriteAsync(string query, IEnumerable<(string, object)> parameters)
     //{
     //    await using var connection = new SqlConnection(_connectionString);
     //    await using var command = new SqlCommand(query, connection);

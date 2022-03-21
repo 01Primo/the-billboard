@@ -34,9 +34,8 @@ namespace TheBillboard.Controllers
         public async Task<IActionResult> Create(Author author)
         {
             if (!ModelState.IsValid)
-            {
                 return View();
-            }
+            
 
             await _authorGateway.Create(author);
 
@@ -46,9 +45,8 @@ namespace TheBillboard.Controllers
         public async Task<IActionResult> Create(int? id)
         {
             if (id is not null)
-            {
                 return View(await _authorGateway.GetById((int)id)!);
-            }
+            
 
             return View();
         }

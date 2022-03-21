@@ -10,10 +10,7 @@ namespace TheBillboard.Readers
     {
         private readonly string _connectionString;
 
-        public SqlReader(IOptions<ConnectionStringOptions> options)
-        {
-            _connectionString = options.Value.DefaultDatabase;
-        }
+        public SqlReader(IOptions<ConnectionStringOptions> options) => _connectionString = options.Value.DefaultDatabase;
 
         public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
         {

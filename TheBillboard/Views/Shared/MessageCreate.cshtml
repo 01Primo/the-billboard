@@ -1,6 +1,6 @@
 ﻿@model MessageCreationViewModel
 
-<form class="card" asp-action="Create" asp-controller="Messages" method="post">
+<form id="MessageCreate" class="card" asp-action="Create" asp-controller="Messages" method="post">
     <div class="form-group">
         @if (Model.Message is not null)
         {
@@ -27,6 +27,5 @@
             <span asp-validation-for="Message.Body" class="text-danger"></span>
         </div>
     </div>
-
     <button type="submit" class="btn btn-sm btn-outline-primary">Send</button>
 </form>

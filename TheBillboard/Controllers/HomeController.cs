@@ -17,24 +17,12 @@ public class HomeController : Controller
         _studentGateway = studentGateway;
     }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+    public IActionResult Index() => View();
     
-    public IActionResult Students()
-    {
-        return View("Students", _studentGateway.GetStudents());
-    }
+    public IActionResult Students() => View("Students", _studentGateway.GetStudents());
 
-    public IActionResult About()
-    {
-        return View();
-    }
+    public IActionResult About() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
-    }
+    public IActionResult Error() => View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
 }

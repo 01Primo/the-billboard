@@ -74,7 +74,7 @@ public class MessageGateway : IMessageGateway
         };
         return await _writer.UpdateAsync(query, parametersTuple);
     }
-    Message Map(IDataReader dr)
+    private Message Map(IDataReader dr)
     {
         return new Message
         {

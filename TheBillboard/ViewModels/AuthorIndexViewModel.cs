@@ -2,6 +2,5 @@
 
 namespace TheBillboard.ViewModels
 {
-    public record AuthorIndexViewModel (Author Author, bool IsDeletable);
-    
+    public record AuthorIndexViewModel (Author Author, bool IsDeletable);    
 }

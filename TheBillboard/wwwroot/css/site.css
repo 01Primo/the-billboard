@@ -43,3 +43,9 @@ body {
   font-size: .75em;
   font-weight: lighter;
 }
+.modal-body{
+    display:flex;
+}
+#createMessageBtn {
+    margin-bottom:9px;
+}
