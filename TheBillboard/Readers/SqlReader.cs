@@ -15,7 +15,7 @@ namespace TheBillboard.Readers
             _connectionString = options.Value.DefaultDatabase;
         }
 
-        public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector)
+        public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
         {
             var queryResults = new HashSet<TEntity>();
 
@@ -23,6 +23,11 @@ namespace TheBillboard.Readers
 
             await using var command = new SqlCommand(query, connection);
 
+            if (parameters is not null)
+            {
+                foreach (var item in parameters)
+                    command.Parameters.AddWithValue(item.Item1, item.Item2);
+            }
             await connection.OpenAsync();
             await using var dr = command.ExecuteReader();
             while (await dr.ReadAsync())

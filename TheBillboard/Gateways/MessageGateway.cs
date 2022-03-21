@@ -25,8 +25,12 @@ public class MessageGateway : IMessageGateway
 
     public async Task<Message>? GetById(int id)
     {
-        var query = $"select * from Message M join Author A on A.Id = M.AuthorId where M.Id = {id}";
-        var message = await _reader.QueryAsync(query, Map);
+        const string query = $"select * from Message M join Author A on A.Id = M.AuthorId where M.Id = @Id";
+        var parametersTuple = new List<(string Name, object Value)>
+        {
+            (@"Id", id)
+        };
+        var message = await _reader.QueryAsync(query, Map, parametersTuple);
         return message.ToList().First();
     }
 
@@ -43,29 +47,31 @@ public class MessageGateway : IMessageGateway
             (@"UpdatedAt", DateTime.Now),
             (@"AuthorId", message.AuthorId)
         };
-        
+
         return _writer.WriteAsync(query, parametersTuple);
     }
 
-    public void Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        //TODO
-        //    {
-        //        _messages = _messages
-        //.Where(message => message.Id != id)
-        //.ToList();
+        const string query = $"DELETE FROM [dbo].[Message] WHERE Id = @Id";
+        var parametersTuple = new List<(string Name, object Value)>
+        {
+            (@"Id", id)
+        };
+        return await _writer.DeleteAsync(query, parametersTuple);
     }
 
-    public void Update(Message message)
+    public async Task<bool> Update(Message message)
     {
-        //TODO
-        //_messages = _messages
-        //    .Where(m => m.Id != message.Id)
-        //    .ToList();
-
-        //message = message with { UpdatedAt = DateTime.Now };
-
-        //_messages.Add(message);
+        const string query = $"UPDATE [dbo].[Message] SET [Title] = @Title,[Body] = @body,[UpdatedAt] = @UpdatedAt WHERE Id = @Id";
+        var parametersTuple = new List<(string Name, object Value)>
+        {
+            (@"Id", message.Id!),
+            (@"Title", message.Title),
+            (@"Body", message.Body),
+            (@"UpdatedAt", DateTime.Now),
+        };
+        return await _writer.UpdateAsync(query, parametersTuple);
     }
     Message Map(IDataReader dr)
     {

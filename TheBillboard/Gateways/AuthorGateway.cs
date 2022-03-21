@@ -1,44 +1,69 @@
-﻿using TheBillboard.Abstract;
+﻿using System.Data;
+using TheBillboard.Abstract;
 using TheBillboard.Models;
 
 namespace TheBillboard.Gateways
 {
     public class AuthorGateway : IAuthorGateway
     {
-        private List<Author> _authors = new List<Author>()
-        {
-            new Author("Alberto", "", 1),
-            new Author("Marco", "Pacchialat", 2),
-        };
+        private readonly IReader _reader;
+        private readonly IWriter _writer;
 
-        private int nextId = 3;
-
-        public Author Create(Author author)
+        public AuthorGateway(IReader reader, IWriter writer)
         {
-            author = author with { Id = nextId };
-            _authors.Add(author);
-            nextId++;
-            return (author);
+            _reader = reader;
+            _writer = writer;
         }
 
-        public void Delete(int id) =>
-            _authors = _authors
-                .Where(x => x.Id != id)
-                .ToList();
+        public Task<IEnumerable<Author>> GetAll()
+        {
+            const string query = "select * from Author";
+            return _reader.QueryAsync(query, Map);
+        }
 
-        public IEnumerable<Author> GetAll() => _authors;
+        public async Task<Author>? GetById(int id)
+        {
+            const string query = $"select * from Author where id = @Id";
+            var parametersTuple = new List<(string Name, object Value)>
+        {
+            (@"Id", id)
+        };
+            var message = await _reader.QueryAsync(query, Map, parametersTuple);
+            return message.ToList().First();
+        }
 
-        public Author? GetById(int id) => _authors.SingleOrDefault(x => x.Id == id);
+        public Task<bool> Create(Author author)
+        {
+            const string query = @"INSERT INTO [dbo].[Author] ([Name],[Surname]) VALUES (@Name, @Surname)";
 
-        //public void Update(Author author)
-        //{
-        //    _authors = _authors
-        //        .Where(x => x.Id != message.Id)
-        //        .ToList();
+            var parametersTuple = new List<(string Name, object Value)>
+            {
+                (@"Name", author.Name),
+                (@"Surname", author.Surname)
+            };
+            return _writer.WriteAsync(query, parametersTuple);
+        }
 
-        //    message = message with { UpdatedAt = DateTime.Now };
 
-        //    _messages.Add(message);
-        //}
+        public async Task<bool> Delete(int id)
+        {
+            const string query = $"DELETE FROM [dbo].[Author] WHERE Id = @Id";
+            var parametersTuple = new List<(string Name, object Value)>
+            {
+                (@"Id", id)
+            };
+            return await _writer.DeleteAsync(query, parametersTuple);
+        }
+
+        Author Map(IDataReader dr)
+        {
+            return new Author
+            {
+                Id = dr["Id"] as int?,
+                Name = dr["name"].ToString()!,
+                Surname = dr["surname"].ToString()!,
+
+            };
+        }
     }
 }

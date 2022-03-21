@@ -21,7 +21,7 @@ public class MessagesController : Controller
     public async Task<IActionResult> Index()
     {
         var messages = await _messageGateway.GetAll();
-        var authors = _authorGateway.GetAll();
+        var authors = await _authorGateway.GetAll();
 
         var messagesWithAuthor = messages.Select(message => MatchAuthorToMessage(message, authors));
 
@@ -41,26 +41,26 @@ public class MessagesController : Controller
         }
         else
         {
-            var viewModel = new MessageCreationViewModel(message, _authorGateway.GetAll());
+            var viewModel = new MessageCreationViewModel(message, await _authorGateway.GetAll());
             return View(viewModel);
         }
     }
 
     [HttpPost]
-    public IActionResult Create(Message message)
+    public async Task<IActionResult> Create(Message message)
     {
         if (!ModelState.IsValid)
         {
-            return View(new MessageCreationViewModel(message, _authorGateway.GetAll()));
+            return View(new MessageCreationViewModel(message, await _authorGateway.GetAll()));
         }
 
         if (message.Id == default)
         {
-            _messageGateway.Create(message);
+            await _messageGateway.Create(message);
         }
         else
         {
-            _messageGateway.Update(message);
+            await _messageGateway.Update(message);
         }
 
         _logger.LogInformation($"Message received: {message.Title}");
@@ -75,14 +75,14 @@ public class MessagesController : Controller
             return View("Error");
         }
 
-        var authors = _authorGateway.GetAll();
+        var authors = await _authorGateway.GetAll();
         var messageWithAuthor = MatchAuthorToMessage(message, authors);
         return View(messageWithAuthor);
     }
 
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _messageGateway.Delete(id);
+        await _messageGateway.Delete(id);
         return RedirectToAction("Index");
     }
 

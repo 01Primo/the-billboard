@@ -4,10 +4,24 @@
     ViewData["Title"] = "Messages";
 }
 
-<div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
-    <h3 class="display-4">New Message</h3>
-    @await Html.PartialAsync("MessageCreate", Model.MessageCreationViewModel)
+<div class="text-center">    
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMessageModal" data>New message</button>
+    <!-- Start modal -->
+    <div class="modal fade" id="newMessageModal" tabindex="-1" aria-labelledby="newMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newMessageModalLabel">New Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @await Html.PartialAsync("MessageCreate", Model.MessageCreationViewModel)
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End modal -->
+
     <h3 class="display-4">Message List</h3>
     <ul class="list-group list-group-flush align-items-center">
         @foreach (var message in Model.Messages)

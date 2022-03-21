@@ -13,37 +13,37 @@ namespace TheBillboard.Controllers
             _authorGateway = authorGateway;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_authorGateway.GetAll());
+            return View(await _authorGateway.GetAll());
         }
 
         [HttpPost]
-        public IActionResult Create(Author author)
+        public async Task<IActionResult> Create(Author author)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            _authorGateway.Create(author);
+            await _authorGateway.Create(author);
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult Create(int? id)
+        public async Task<IActionResult> Create(int? id)
         {
             if (id is not null)
             {
-                return View(_authorGateway.GetById((int)id));
+                return View(await _authorGateway.GetById((int)id)!);
             }
 
             return View();
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _authorGateway.Delete(id);
+            await _authorGateway.Delete(id);
             return RedirectToAction("Index");
         }
 

@@ -17,7 +17,7 @@ public class PostgresReader : IReader
         _connectionString = options.Value.PostgreDatabase;
     }
 
-    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector)
+    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
     {
         var messages = new HashSet<TEntity>(); 
         
