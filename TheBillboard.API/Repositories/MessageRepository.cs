@@ -1,5 +1,5 @@
 ﻿using TheBillboard.API.Abstract;
-using TheBillboard.Domain;
+using TheBillboard.API.Domain;
 
 namespace TheBillboard.API.Repositories
 {

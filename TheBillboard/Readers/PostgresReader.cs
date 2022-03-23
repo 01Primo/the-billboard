@@ -12,28 +12,13 @@ namespace TheBillboard.MVC.Readers;
 public class PostgresReader : IReader
 {
     private readonly string _connectionString;
-
     public PostgresReader(IOptions<ConnectionStringOptions> options) => _connectionString = options.Value.PostgreDatabase;
-
-    public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
+    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, DynamicParameters? parameters = null)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
-        await using var command = new NpgsqlCommand(query, connection);
-
-        await connection.OpenAsync();
-        await using var dr = command.ExecuteReader();
-        while (await dr.ReadAsync())
-        {
-            var message = selector(dr);
-            yield return message;
-        }
-
-        await connection.CloseAsync();
-        await connection.DisposeAsync();
-    }
-
-    public Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters? parameters = null)
-    {
-        throw new NotImplementedException();
+        IEnumerable<TEntity>? result = default;
+        return parameters is null ?
+               await connection.QueryAsync<TEntity>(query) :
+               await connection.QueryAsync<TEntity>(query, parameters);
     }
 }

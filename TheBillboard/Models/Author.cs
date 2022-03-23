@@ -13,8 +13,6 @@ namespace TheBillboard.MVC.Models
             Surname = surname;
             Id = id;
         }
-        //System.Int32 Id, System.String Name, System.String Surname
-
         public string Name { get; init; }
         public string Surname { get; init; }
         public int? Id { get; init; }

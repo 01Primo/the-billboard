@@ -18,11 +18,11 @@ namespace TheBillboard.MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var authors = _authorGateway.GetAll();
-            var messages = await _messageGateway.GetAll();
+            var authors = await _authorGateway.GetAllAsync();
+            var messages = await _messageGateway.GetAllAsync();
 
             var authorIndexViewModelList = new List<AuthorIndexViewModel>();
-            await foreach (var author in authors)
+            foreach (var author in authors)
             {
                 var isDeletable = !(messages.Any(t => t.AuthorId == author.Id));
                 authorIndexViewModelList.Add(new AuthorIndexViewModel(author, isDeletable));

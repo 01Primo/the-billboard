@@ -21,7 +21,15 @@ public record Message
         UpdatedAt = updatedAt;
         Id = id;
     }    
-    public Message(int id, string title, string body, DateTime CreatedAt, DateTime UpdatedAt, int authorId, string name, string surname)
+    public Message(
+        int id,
+        string title,
+        string body,
+        DateTime CreatedAt,
+        DateTime UpdatedAt,
+        int authorId,
+        string name,
+        string surname)
     {
         Id = id;
         Title = title;

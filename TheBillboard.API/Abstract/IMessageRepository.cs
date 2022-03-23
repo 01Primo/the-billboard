@@ -1,4 +1,4 @@
-﻿using TheBillboard.Domain;
+﻿using TheBillboard.API.Domain;
 
 namespace TheBillboard.API.Abstract
 {
