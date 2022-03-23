@@ -1,6 +1,6 @@
-﻿using TheBillboard.Models;
+﻿using TheBillboard.MVC.Models;
 
-namespace TheBillboard.Abstract
+namespace TheBillboard.MVC.Abstract
 {
     public interface IAuthorGateway
     {

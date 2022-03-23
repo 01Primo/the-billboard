@@ -3,11 +3,11 @@ using Dapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
-using TheBillboard.Options;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
+using TheBillboard.MVC.Options;
 
-namespace TheBillboard.Readers;
+namespace TheBillboard.MVC.Readers;
 
 public class PostgresReader : IReader
 {
@@ -32,7 +32,7 @@ public class PostgresReader : IReader
         await connection.DisposeAsync();
     }
 
-    public Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters parameters)
+    public Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters? parameters = null)
     {
         throw new NotImplementedException();
     }

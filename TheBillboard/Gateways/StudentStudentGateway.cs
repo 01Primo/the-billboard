@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using TheBillboard.Abstract;
-using TheBillboard.Options;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Options;
 
-namespace TheBillboard.Gateways;
+namespace TheBillboard.MVC.Gateways;
 
 public class StudentStudentGateway : IStudentGateway
 {

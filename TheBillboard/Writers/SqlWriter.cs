@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
-using TheBillboard.Options;
+using TheBillboard.MVC.Options;
 
-namespace TheBillboard.Writers;
+namespace TheBillboard.MVC.Writers;
 
 public class SqlWriter : IWriter
 {

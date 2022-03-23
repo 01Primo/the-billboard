@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
-using TheBillboard.Abstract;
-using TheBillboard.Options;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Options;
 using Dapper;
 
-namespace TheBillboard.Readers
+namespace TheBillboard.MVC.Readers
 {
     public class SqlReader : IReader
     {
@@ -34,10 +34,21 @@ namespace TheBillboard.Readers
             await connection.DisposeAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters parameters)
+        public async Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters? parameters = null)
         {
             await using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<TEntity>(query, parameters); ;
+            IEnumerable<TEntity>? result = default;
+            try
+            {
+                result = parameters is null ?
+            await connection.QueryAsync<TEntity>(query) :
+            await connection.QueryAsync<TEntity>(query, parameters);
+            }
+            catch (Exception ex )
+            {
+                Console.WriteLine(ex.Message);
+            }            
+            return result!;
         }
     }
 }

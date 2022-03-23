@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
-using TheBillboard.ViewModels;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
+using TheBillboard.MVC.ViewModels;
 
-namespace TheBillboard.Controllers;
+namespace TheBillboard.MVC.Controllers;
 
 public class MessagesController : Controller
 {
@@ -18,9 +18,9 @@ public class MessagesController : Controller
         _authorGateway = authorGateway;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var messages = _messageGateway.GetAll();
+        var messages = await  _messageGateway.GetAll();
         var authors = _authorGateway.GetAll();
 
         var messagesWithAuthor = messages.Select(message => MatchAuthorToMessage(message, authors));

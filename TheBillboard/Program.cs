@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Options;
-using TheBillboard.Abstract;
-using TheBillboard.Gateways;
-using TheBillboard.Options;
-using TheBillboard.Readers;
-using TheBillboard.Writers;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Gateways;
+using TheBillboard.MVC.Options;
+using TheBillboard.MVC.Readers;
+using TheBillboard.MVC.Writers;
 
 var builder = WebApplication.CreateBuilder(args);
 

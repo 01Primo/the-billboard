@@ -1,12 +1,12 @@
 ﻿using Npgsql;
 using System.Data;
 using System.Data.SqlClient;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
 using System.Linq;
 using Dapper;
 
-namespace TheBillboard.Gateways;
+namespace TheBillboard.MVC.Gateways;
 
 public class MessageGateway : IMessageGateway
 {
@@ -19,10 +19,10 @@ public class MessageGateway : IMessageGateway
         _writer = writer;
     }
 
-    public IAsyncEnumerable<Message> GetAll()
-    {
-        const string query = "select * from Message M join Author A on A.Id = M.AuthorId";
-        return _reader.QueryAsync(query, Map);
+    public async Task<IEnumerable<Message>> GetAll()
+    {       
+        const string query = "select M.Id, M.Title, M.Body, M.CreatedAt, M.UpdatedAt, M.authorId, A.Name, A.Surname from Message M join Author A on A.Id = M.AuthorId";
+        return await _reader.QueryWithDapper<Message>(query);
     }
 
     public async Task<Message>? GetById(int id)

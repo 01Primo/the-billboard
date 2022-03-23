@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using System.Data;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
 
-namespace TheBillboard.Gateways
+namespace TheBillboard.MVC.Gateways
 {
     public class AuthorGateway : IAuthorGateway
     {

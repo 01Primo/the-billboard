@@ -1,10 +1,10 @@
-﻿using TheBillboard.Models;
+﻿using TheBillboard.MVC.Models;
 
-namespace TheBillboard.Abstract;
+namespace TheBillboard.MVC.Abstract;
 
 public interface IMessageGateway
 {
-    IAsyncEnumerable<Message> GetAll();
+    Task<IEnumerable<Message>> GetAll();
     Task<Message>? GetById(int id);
     Task<bool> Create(Message message);
     Task<bool> Update(Message message);

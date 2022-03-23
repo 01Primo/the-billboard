@@ -16,8 +16,7 @@
             @if (Model.Message.Id is null)
             {
                 <select asp-for="Message.AuthorId" class="form-select">
-                    @{
-                        await foreach (var author in Model.Authors)
+                    @{ await foreach (var author in Model.Authors)
                         {
                             <option value="@author.Id">@author.ToString()</option>
                         }

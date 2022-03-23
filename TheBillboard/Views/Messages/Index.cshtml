@@ -25,7 +25,7 @@
     <!-- End modal -->
 
     <ul class="list-group list-group-flush align-items-center">
-        @{await foreach (var message in Model.Messages)
+        @foreach (var message in Model.Messages)
         {
             <li class="list-group-item">
                 <div class="card">
@@ -41,7 +41,6 @@
                     </div>
                 </div>
             </li>
-        }
-        } 
+        }         
     </ul>
 </div>
