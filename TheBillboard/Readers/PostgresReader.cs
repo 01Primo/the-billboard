@@ -12,17 +12,12 @@ public class PostgresReader : IReader
 {
     private readonly string _connectionString;
 
-    public PostgresReader(IOptions<ConnectionStringOptions> options)
-    {
-        _connectionString = options.Value.PostgreDatabase;
-    }
+    public PostgresReader(IOptions<ConnectionStringOptions> options) => _connectionString = options.Value.PostgreDatabase;
 
     public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
     {
-        
-        await using var connection = new NpgsqlConnection(_connectionString);
-
-        await using var command = new NpgsqlCommand(query, connection);
+        using var connection = new NpgsqlConnection(_connectionString);
+        using var command = new NpgsqlCommand(query, connection);
 
         await connection.OpenAsync();
         await using var dr = command.ExecuteReader();

@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Dapper;
+using System.Data;
 using TheBillboard.Abstract;
 using TheBillboard.Models;
 
@@ -28,30 +29,29 @@ namespace TheBillboard.Gateways
             {
                 (@"Id", id)
             };
-            var result = await _reader.QueryAsync(query, Map, parametersTuple).ToListAsync();            
+            var result = await _reader.QueryAsync(query, Map, parametersTuple).ToListAsync();
             return result.First();
         }
 
         public Task<bool> Create(Author author)
         {
             const string query = @"INSERT INTO [dbo].[Author] ([Name],[Surname]) VALUES (@Name, @Surname)";
+         
+            var parameters = new DynamicParameters();
+            parameters.Add("Name", author.Name, DbType.String);
+            parameters.Add("Surname", author.Surname, DbType.String);
 
-            var parametersTuple = new List<(string Name, object Value)>
-            {
-                (@"Name", author.Name),
-                (@"Surname", author.Surname)
-            };
-            return _writer.CreateAsync(query, parametersTuple);
+            return _writer.CreateAsync(query, parameters);
         }
 
         public async Task<bool> Delete(int id)
         {
             const string query = $"DELETE FROM [dbo].[Author] WHERE Id = @Id";
-            var parametersTuple = new List<(string Name, object Value)>
-            {
-                (@"Id", id)
-            };
-            return await _writer.DeleteAsync(query, parametersTuple);
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id, DbType.Int32);
+
+            return await _writer.DeleteAsync(query, parameters);
         }
 
         private Author Map(IDataReader dr)

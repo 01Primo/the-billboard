@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using TheBillboard.Abstract;
 using TheBillboard.Models;
 using System.Linq;
+using Dapper;
 
 namespace TheBillboard.Gateways;
 
@@ -40,39 +41,37 @@ public class MessageGateway : IMessageGateway
         const string query = $"INSERT INTO [dbo].[Message] ([Title],[Body],[CreatedAt],[UpdatedAt],[AuthorId])" +
             $"VALUES(@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
 
-        var parametersTuple = new List<(string Name, object Value)>
-        {
-            (@"Title", message.Title),
-            (@"Body", message.Body),
-            (@"CreatedAt", DateTime.Now),
-            (@"UpdatedAt", DateTime.Now),
-            (@"AuthorId", message.AuthorId)
-        };
+        var parameters = new DynamicParameters();
+        parameters.Add("Title", message.Title, DbType.String);
+        parameters.Add("Body", message.Body, DbType.String);
+        parameters.Add("CreatedAt", DateTime.Now, DbType.DateTime);
+        parameters.Add("UpdatedAt", DateTime.Now, DbType.DateTime);
+        parameters.Add("AuthorId", message.AuthorId, DbType.Int32);
 
-        return _writer.CreateAsync(query, parametersTuple);
+        return _writer.CreateAsync(query, parameters);
     }
 
     public async Task<bool> Delete(int id)
     {
         const string query = $"DELETE FROM [dbo].[Message] WHERE Id = @Id";
-        var parametersTuple = new List<(string Name, object Value)>
-        {
-            (@"Id", id)
-        };
-        return await _writer.DeleteAsync(query, parametersTuple);
+        
+        var parameters = new DynamicParameters();
+        parameters.Add("Id", id, DbType.Int32);
+
+        return await _writer.DeleteAsync(query, parameters);
     }
 
     public async Task<bool> Update(Message message)
     {
-        const string query = $"UPDATE [dbo].[Message] SET [Title] = @Title,[Body] = @body,[UpdatedAt] = @UpdatedAt WHERE Id = @Id";
-        var parametersTuple = new List<(string Name, object Value)>
-        {
-            (@"Id", message.Id!),
-            (@"Title", message.Title),
-            (@"Body", message.Body),
-            (@"UpdatedAt", DateTime.Now),
-        };
-        return await _writer.UpdateAsync(query, parametersTuple);
+        const string query = $"UPDATE [dbo].[Message] SET [Title] = @Title,[Body] = @body,[UpdatedAt] = @UpdatedAt WHERE Id = @Id";        
+        
+        var parameters = new DynamicParameters();
+        parameters.Add("Id", message.Id!, DbType.Int32);
+        parameters.Add("Title", message.Title, DbType.String);
+        parameters.Add("Body", message.Body, DbType.String);
+        parameters.Add("UpdatedAt", DateTime.Now, DbType.DateTime);
+
+        return await _writer.UpdateAsync(query, parameters);
     }
     private Message Map(IDataReader dr)
     {
