@@ -14,7 +14,7 @@ public class SqlWriter : IWriter
 
     private async Task<bool> WriteAsync(string query, DynamicParameters parameters)
     {
-        using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.ExecuteAsync(query, parameters);
         return true;
     }

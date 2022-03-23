@@ -14,8 +14,8 @@ namespace TheBillboard.Readers
 
         public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
         {
-            using var connection = new SqlConnection(_connectionString);
-            using var command = new SqlCommand(query, connection);
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(query, connection);
 
             if (parameters is not null)            
                 foreach (var item in parameters)
