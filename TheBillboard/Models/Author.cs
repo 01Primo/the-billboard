@@ -5,14 +5,15 @@ namespace TheBillboard.MVC.Models
     public record Author
     {
         public Author(
+            int? id = default,
             string name = "",
-            string surname = "",
-            int? id = default)
+            string surname = "")
         {
             Name = name;
             Surname = surname;
             Id = id;
         }
+        //System.Int32 Id, System.String Name, System.String Surname
 
         public string Name { get; init; }
         public string Surname { get; init; }

@@ -29,7 +29,7 @@ public record Message
         AuthorId = authorId;
         this.CreatedAt = CreatedAt;
         this.UpdatedAt = UpdatedAt;
-        Author = new Author(name, surname, authorId);
+        Author = new Author(authorId, name, surname);
     }
 
     public string Title { get; init; }

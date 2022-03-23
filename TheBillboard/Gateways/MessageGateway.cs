@@ -21,18 +21,18 @@ public class MessageGateway : IMessageGateway
 
     public async Task<IEnumerable<Message>> GetAll()
     {       
-        const string query = "select M.Id, M.Title, M.Body, M.CreatedAt, M.UpdatedAt, M.authorId, A.Name, A.Surname from Message M join Author A on A.Id = M.AuthorId";
+        const string query = "SELECT M.Id, M.Title, M.Body, M.CreatedAt, M.UpdatedAt, M.AuthorId, A.Name, A.Surname FROM Message M join Author A on A.Id = M.AuthorId";
         return await _reader.QueryWithDapper<Message>(query);
     }
 
     public async Task<Message>? GetById(int id)
     {
-        const string query = $"select * from Message M join Author A on A.Id = M.AuthorId where M.Id = @Id";
-        var parametersTuple = new List<(string Name, object Value)>
-        {
-            (@"Id", id)
-        };
-        var message = await _reader.QueryAsync(query, Map, parametersTuple).ToListAsync();
+        const string query = $"SELECT M.Id, M.Title, M.Body, M.CreatedAt, M.UpdatedAt, M.AuthorId, A.Name, A.Surname FROM Message M join Author A on A.Id = M.AuthorId WHERE M.Id = @Id";
+
+        var parameters = new DynamicParameters();
+        parameters.Add("Id", id, DbType.Int32);
+
+        var message = await _reader.QueryWithDapper<Message>(query, parameters);
         return message.First();
     }
 
@@ -72,23 +72,5 @@ public class MessageGateway : IMessageGateway
         parameters.Add("UpdatedAt", DateTime.Now, DbType.DateTime);
 
         return await _writer.UpdateAsync(query, parameters);
-    }
-    private Message Map(IDataReader dr)
-    {
-        return new Message
-        {
-            Id = dr["id"] as int?,
-            Body = dr["body"].ToString()!,
-            Title = dr["title"].ToString()!,
-            CreatedAt = dr["createdAt"] as DateTime?,
-            UpdatedAt = dr["updatedAt"] as DateTime?,
-            AuthorId = (int)dr["authorId"],
-            Author = new Author
-            {
-                Id = dr["authorId"] as int?,
-                Name = dr["name"].ToString()!,
-                Surname = dr["surname"].ToString()!,
-            }
-        };
     }
 }
