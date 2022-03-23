@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace TheBillboard.Models
+namespace TheBillboard.Domain
 {
     //todo creare costruttore con firma
     public record Author (string Name = "", string Surname = "", int? Id = default)

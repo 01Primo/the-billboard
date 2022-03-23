@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using TheBillboard.Abstract;
 using TheBillboard.Options;
+using Dapper;
 
 namespace TheBillboard.Readers
 {
@@ -31,6 +32,12 @@ namespace TheBillboard.Readers
 
             await connection.CloseAsync();
             await connection.DisposeAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters parameters)
+        {
+            await using var connection = new SqlConnection(_connectionString);
+            return await connection.QueryAsync<TEntity>(query, parameters); ;
         }
     }
 }

@@ -13,7 +13,7 @@ public class PostgresWriter : IWriter
     public PostgresWriter(IOptions<ConnectionStringOptions> options) => _connectionString = options.Value.PostgreDatabase;
     private async Task<bool> WriteAsync(string query, DynamicParameters parameters)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
+        await using var connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync(query, parameters);
         return true;
     }

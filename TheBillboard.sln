@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBillboard", "TheBillboard\TheBillboard.csproj", "{9F524A19-D86A-450F-9242-0518A72334EF}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheBillboard", "TheBillboard\TheBillboard.csproj", "{9F524A19-D86A-450F-9242-0518A72334EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheBillboard.API", "TheBillboard.API\TheBillboard.API.csproj", "{0C128EA4-16A8-46D7-954F-CDCDFFD08892}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{9F524A19-D86A-450F-9242-0518A72334EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F524A19-D86A-450F-9242-0518A72334EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F524A19-D86A-450F-9242-0518A72334EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C128EA4-16A8-46D7-954F-CDCDFFD08892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C128EA4-16A8-46D7-954F-CDCDFFD08892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C128EA4-16A8-46D7-954F-CDCDFFD08892}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C128EA4-16A8-46D7-954F-CDCDFFD08892}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {410DDF01-4533-4BC6-A759-3F2717CAC240}
 	EndGlobalSection
 EndGlobal

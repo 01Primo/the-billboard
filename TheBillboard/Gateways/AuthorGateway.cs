@@ -25,11 +25,10 @@ namespace TheBillboard.Gateways
         public async Task<Author>? GetById(int id)
         {
             const string query = $"select * from Author where id = @Id";
-            var parametersTuple = new List<(string Name, object Value)>
-            {
-                (@"Id", id)
-            };
-            var result = await _reader.QueryAsync(query, Map, parametersTuple).ToListAsync();
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id, DbType.Int32);
+            //todo
+            var result = await _reader.QueryWithDapper<Author>(query, parameters);
             return result.First();
         }
 

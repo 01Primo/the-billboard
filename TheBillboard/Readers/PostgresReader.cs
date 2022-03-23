@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Dapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -16,8 +17,8 @@ public class PostgresReader : IReader
 
     public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector, IEnumerable<(string, object)> parameters = default!)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        using var command = new NpgsqlCommand(query, connection);
+        await using var connection = new NpgsqlConnection(_connectionString);
+        await using var command = new NpgsqlCommand(query, connection);
 
         await connection.OpenAsync();
         await using var dr = command.ExecuteReader();
@@ -29,5 +30,10 @@ public class PostgresReader : IReader
 
         await connection.CloseAsync();
         await connection.DisposeAsync();
+    }
+
+    public Task<IEnumerable<TEntity>> QueryWithDapper<TEntity>(string query, DynamicParameters parameters)
+    {
+        throw new NotImplementedException();
     }
 }
