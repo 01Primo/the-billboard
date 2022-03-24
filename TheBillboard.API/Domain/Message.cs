@@ -23,12 +23,6 @@ public record Message
         Id = id;
     }
 
-    // (System.Int32 Id,
-    // System.String Title,
-    // System.String Body,
-    //
-    // System.DateTime MessageCreatedAt,
-    // System.Int32 AuthorId, System.DateTime MessageUpdatedAt, System.String Name, System.String Surname, System.String Email, System.DateTime AuthorCreatedAt)
     public Message(int id, string title, string body, int authorId, string name, string surname, string email, DateTime messageCreatedAt, DateTime messageUpdatedAt, DateTime authorCreatedAt)
     {
         Id = id;
@@ -38,8 +32,6 @@ public record Message
         CreatedAt = messageCreatedAt;
         UpdatedAt = messageUpdatedAt;
         Author = new Author(name, surname, authorId, email, CreatedAt: authorCreatedAt);
-
-        // var a = new Author("A", "V", UpdatedAt: DateTime.Now);
     }
 
     public string Title { get; init; }

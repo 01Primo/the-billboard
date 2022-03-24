@@ -4,6 +4,6 @@ using Domain;
 
 public interface IMessageRepository
 {
-    IEnumerable<Message> GetAll();
-    Message? GetById(int id);
+    Task<IEnumerable<Message>> GetAll();
+    Task<Message?> GetById(int id);
 }
