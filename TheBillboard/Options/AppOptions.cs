@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TheBillboard.Options;
+namespace TheBillboard.MVC.Options;
 
 public class AppOptions
 {

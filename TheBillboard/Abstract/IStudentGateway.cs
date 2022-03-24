@@ -1,4 +1,4 @@
-﻿namespace TheBillboard.Abstract;
+﻿namespace TheBillboard.MVC.Abstract;
 
 public interface IStudentGateway
 {
