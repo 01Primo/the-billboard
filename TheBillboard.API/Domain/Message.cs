@@ -22,6 +22,17 @@ public record Message
         UpdatedAt = updatedAt;
         Id = id;
     }
+    
+    public Message(
+        int? id,
+        string title,
+        string body,
+        int authorId,
+        DateTime? createdAt,
+        DateTime? updatedAt
+        ) : this(title, body, authorId, default, createdAt, updatedAt, id)
+    {
+    }
 
     public Message(int id, string title, string body, int authorId, string name, string surname, string email, DateTime messageCreatedAt, DateTime messageUpdatedAt, DateTime authorCreatedAt)
     {

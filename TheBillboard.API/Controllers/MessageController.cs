@@ -3,6 +3,7 @@
 using Abstract;
 using Bogus;
 using Domain;
+using Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -33,6 +34,26 @@ public class MessageController : ControllerBase
             return message is not null
                 ? Ok(message)
                 : NotFound();    
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost]
+    public IActionResult Create([FromBody] MessageDto message)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var created = _messageRepository.Create(message);
+
+            return Ok(created);
         }
         catch (Exception e)
         {
