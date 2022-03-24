@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "dff02c4f-f628-4109-bb1e-7035b7ca1105",
+		"_postman_id": "7dc92962-9894-4c4e-88c1-527ceed3d5d7",
 		"name": "The Billboard API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -42,6 +42,50 @@
 							"port": "7159",
 							"path": [
 								"Message"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authors",
+			"item": [
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7159/Author/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7159",
+							"path": [
+								"Author",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7159/Author",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7159",
+							"path": [
+								"Author"
 							]
 						}
 					},
