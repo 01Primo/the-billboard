@@ -41,7 +41,7 @@ namespace TheBillboard.API.Repositories
             };
         }
 
-        public Message GetBtId(int id)
+        public Message? GetBtId(int id)
         {
             return new Message()
             {

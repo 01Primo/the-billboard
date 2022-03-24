@@ -5,6 +5,6 @@ namespace TheBillboard.API.Abstract
     public interface IMessageRepository
     {
         IEnumerable<Message> GetAll();
-        Message GetBtId(int id);
+        Message? GetBtId(int id);
     }
 }

@@ -15,15 +15,29 @@ namespace TheBillboard.API.Controllers
             _messageRepository = messageRepository;
         }
         [HttpGet]
-        public IEnumerable<Message> GetAll()
+        public IActionResult GetAll()
         {
-            return _messageRepository.GetAll();
+            return Ok(_messageRepository.GetAll());
         }
 
         [HttpGet("{id:int}")]
-        public Message GetById(int id)
+        public IActionResult GetById(int id)
         {
-            return _messageRepository.GetBtId(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var message = _messageRepository.GetBtId(id);
+                return message is not null
+                    ? Ok(message)
+                    : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
