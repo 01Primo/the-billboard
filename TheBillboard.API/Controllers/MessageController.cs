@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TheBillboard.API.Abstract;
-using TheBillboard.Domain;
+using TheBillboard.API.Domain;
 
 namespace TheBillboard.API.Controllers
 {

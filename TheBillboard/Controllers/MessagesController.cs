@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
-using TheBillboard.ViewModels;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
+using TheBillboard.MVC.ViewModels;
 
-namespace TheBillboard.Controllers;
+namespace TheBillboard.MVC.Controllers;
 
 public class MessagesController : Controller
 {
@@ -18,10 +18,10 @@ public class MessagesController : Controller
         _authorGateway = authorGateway;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var messages = _messageGateway.GetAll();
-        var authors = _authorGateway.GetAll();
+        var messages = await  _messageGateway.GetAllAsync();
+        var authors = await _authorGateway.GetAllAsync();
 
         var messagesWithAuthor = messages.Select(message => MatchAuthorToMessage(message, authors));
 
@@ -33,13 +33,13 @@ public class MessagesController : Controller
     [HttpGet]
     public async Task<IActionResult> Create(int? id)
     {
-        var message = id is not null ? await _messageGateway.GetById((int)id)! : new Message();
+        var message = id is not null ? await _messageGateway.GetByIdAsync((int)id)! : new Message();
 
         if (message is null)
             return View("Error");
         else
         {
-            var viewModel = new MessageCreationViewModel(message, _authorGateway.GetAll());
+            var viewModel = new MessageCreationViewModel(message, await _authorGateway.GetAllAsync());
             return View(viewModel);
         }
     }
@@ -48,12 +48,12 @@ public class MessagesController : Controller
     public async Task<IActionResult> Create(Message message)
     {
         if (!ModelState.IsValid)
-            return View(new MessageCreationViewModel(message, _authorGateway.GetAll()));
+            return View(new MessageCreationViewModel(message, await _authorGateway.GetAllAsync()));
 
         if (message.Id == default)
-            await _messageGateway.Create(message);
+            await _messageGateway.CreateAsync(message);
         else
-            await _messageGateway.Update(message);
+            await _messageGateway.UpdateAsync(message);
 
         _logger.LogInformation($"Message received: {message.Title}");
         return RedirectToAction("Index");
@@ -61,7 +61,7 @@ public class MessagesController : Controller
 
     public async Task<IActionResult> Detail(int id)
     {
-        var message = await _messageGateway.GetById(id)!;
+        var message = await _messageGateway.GetByIdAsync(id)!;
         if (message is null)
             return View("Error");
 
@@ -71,10 +71,10 @@ public class MessagesController : Controller
 
     public async Task<IActionResult> Delete(int id)
     {
-        await _messageGateway.Delete(id);
+        await _messageGateway. DeleteAsync(id);
         return RedirectToAction("Index");
     }
 
-    private MessageWithAuthor MatchAuthorToMessage(Message message, IAsyncEnumerable<Author> authors)
-        => new MessageWithAuthor(message, authors.ToEnumerable().First(a => a.Id == message.AuthorId));
+    private MessageWithAuthor MatchAuthorToMessage(Message message, IEnumerable<Author> authors)
+        => new MessageWithAuthor(message, authors.First(a => a.Id == message.AuthorId));
 }

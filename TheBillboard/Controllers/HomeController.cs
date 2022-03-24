@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using TheBillboard.Abstract;
-using TheBillboard.Gateways;
-using TheBillboard.Models;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Gateways;
+using TheBillboard.MVC.Models;
 
-namespace TheBillboard.Controllers;
+namespace TheBillboard.MVC.Controllers;
 
 public class HomeController : Controller
 {

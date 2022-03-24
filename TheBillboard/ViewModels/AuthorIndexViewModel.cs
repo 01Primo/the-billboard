@@ -1,6 +1,6 @@
-﻿using TheBillboard.Models;
+﻿using TheBillboard.MVC.Models;
 
-namespace TheBillboard.ViewModels
+namespace TheBillboard.MVC.ViewModels
 {
     public record AuthorIndexViewModel (Author Author, bool IsDeletable);    
 }

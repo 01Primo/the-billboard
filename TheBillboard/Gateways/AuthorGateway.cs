@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using System.Data;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
 
-namespace TheBillboard.Gateways
+namespace TheBillboard.MVC.Gateways
 {
     public class AuthorGateway : IAuthorGateway
     {
@@ -16,19 +16,18 @@ namespace TheBillboard.Gateways
             _writer = writer;
         }
 
-        public IAsyncEnumerable<Author> GetAll()
+        public async Task<IEnumerable<Author>> GetAllAsync()
         {
-            const string query = "select * from Author";
-            return _reader.QueryAsync(query, Map);
+            const string query = "SELECT * FROM Author";
+            return await _reader.QueryAsync<Author>(query);
         }
 
         public async Task<Author>? GetById(int id)
         {
-            const string query = $"select * from Author where id = @Id";
+            const string query = $"SELECT * FROM Author WHERE id = @Id";
             var parameters = new DynamicParameters();
             parameters.Add("Id", id, DbType.Int32);
-            //todo
-            var result = await _reader.QueryWithDapper<Author>(query, parameters);
+            var result = await _reader.QueryAsync<Author>(query, parameters);
             return result.First();
         }
 

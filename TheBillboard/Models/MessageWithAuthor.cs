@@ -1,4 +1,4 @@
-﻿namespace TheBillboard.Models
+﻿namespace TheBillboard.MVC.Models
 {
     public record MessageWithAuthor(Message Message, Author Author);
 }

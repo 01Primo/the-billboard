@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Options;
 using Npgsql;
 using System.Data;
-using TheBillboard.Options;
+using TheBillboard.MVC.Options;
 
-namespace TheBillboard.Writers;
+namespace TheBillboard.MVC.Writers;
 
 public class PostgresWriter : IWriter
 {

@@ -1,15 +1,12 @@
-﻿using TheBillboard.Models;
+﻿using TheBillboard.MVC.Models;
 
-namespace TheBillboard.Abstract
+namespace TheBillboard.MVC.Abstract
 {
     public interface IAuthorGateway
     {
-        IAsyncEnumerable<Author> GetAll();
-
+        Task<IEnumerable<Author>> GetAllAsync();
         Task<Author>? GetById(int id);
-
         Task<bool> Create(Author author);
-
         Task<bool> Delete(int id);
     }
 }

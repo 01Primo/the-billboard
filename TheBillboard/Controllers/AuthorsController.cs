@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TheBillboard.Abstract;
-using TheBillboard.Models;
-using TheBillboard.ViewModels;
+using TheBillboard.MVC.Abstract;
+using TheBillboard.MVC.Models;
+using TheBillboard.MVC.ViewModels;
 
-namespace TheBillboard.Controllers
+namespace TheBillboard.MVC.Controllers
 {
     public class AuthorsController : Controller
     {
@@ -18,13 +18,13 @@ namespace TheBillboard.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var authors = _authorGateway.GetAll();
-            var messages = _messageGateway.GetAll();
+            var authors = await _authorGateway.GetAllAsync();
+            var messages = await _messageGateway.GetAllAsync();
 
             var authorIndexViewModelList = new List<AuthorIndexViewModel>();
-            await foreach (var author in authors)
+            foreach (var author in authors)
             {
-                var isDeletable = !(await messages.AnyAsync(t => t.AuthorId == author.Id));
+                var isDeletable = !(messages.Any(t => t.AuthorId == author.Id));
                 authorIndexViewModelList.Add(new AuthorIndexViewModel(author, isDeletable));
             }
 
