@@ -5,6 +5,7 @@ using Abstract;
 using Dapper;
 using Microsoft.Extensions.Options;
 using Options;
+using Domain;
 
 public class SqlWriter : IWriter
 {
@@ -15,7 +16,7 @@ public class SqlWriter : IWriter
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<int?> WriteAndReturnIdAsync(string query, object objectToBindToQuery)
+    public async Task<int?> WriteAndReturnIdAsync<TEntity>(string query, TEntity objectToBindToQuery)
     {
         await using var connection = new SqlConnection(_connectionString);
         var insertedId = await connection.ExecuteScalarAsync(query,
@@ -23,7 +24,7 @@ public class SqlWriter : IWriter
                                                          commandTimeout: 10) as int?;
         return insertedId;
     }
-    public async Task<bool> WriteAsync(string query, object objectToBindToQuery)
+    public async Task<bool> WriteAsync<TEntity>(string query, TEntity objectToBindToQuery)
     {
         await using var connection = new SqlConnection(_connectionString);
         var affectedRows = await connection.ExecuteAsync(query,
@@ -32,7 +33,13 @@ public class SqlWriter : IWriter
         return affectedRows > 0;
     }
 
-    public async Task<bool> UpdateAsync(string query, object objectToBindToQuery) => await WriteAsync(query, objectToBindToQuery);
-    public async Task<bool> DeleteAsync(string query, object objectToBindToQuery) => await WriteAsync(query, objectToBindToQuery);
-
+    public async Task<bool> UpdateAsync<TEntity>(string query, TEntity objectToBindToQuery) => await WriteAsync(query, objectToBindToQuery);
+    public async Task<bool> DeleteAsync<TEntity>(string query, TEntity objectToBindToQuery)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        var affectedRows = await connection.ExecuteAsync(query,
+                                                         objectToBindToQuery,
+                                                         commandTimeout: 10);
+        return affectedRows > 0;
+    }
 }

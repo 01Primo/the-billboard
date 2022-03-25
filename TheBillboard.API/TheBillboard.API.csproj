@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Abstract\NewFile.txt" />
+    <None Remove="Domain\BaseObject" />
+    <None Remove="Domain\NewFile.txt" />
     <None Remove="Dtos\NewFile.txt" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4874c35c-c4d8-4430-aa21-2c5890e090f8",
+		"_postman_id": "7e0283a9-91fc-4378-9819-5fb9049a8a66",
 		"name": "The Billboard API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,19 +10,30 @@
 			"item": [
 				{
 					"name": "GetById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7159/Message/1",
-							"protocol": "https",
+							"raw": "{{BaseURL}}/Message/{{MessageID}}",
 							"host": [
-								"localhost"
+								"{{BaseURL}}"
 							],
-							"port": "7159",
 							"path": [
 								"Message",
-								"1"
+								"{{MessageID}}"
 							]
 						}
 					},
@@ -98,12 +109,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7159/Message",
-							"protocol": "https",
+							"raw": "{{BaseURL}}/Message",
 							"host": [
-								"localhost"
+								"{{BaseURL}}"
 							],
-							"port": "7159",
 							"path": [
 								"Message"
 							]
@@ -113,6 +122,19 @@
 				},
 				{
 					"name": "Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -127,12 +149,10 @@
 							"raw": "{\r\n    \"title\": \"Hello\",\r\n    \"body\": \"Hello World!\",\r\n    \"authorId\": 1\r\n}"
 						},
 						"url": {
-							"raw": "https://localhost:7159/Message",
-							"protocol": "https",
+							"raw": "{{BaseURL}}/Message",
 							"host": [
-								"localhost"
+								"{{BaseURL}}"
 							],
-							"port": "7159",
 							"path": [
 								"Message"
 							]
@@ -218,6 +238,46 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Hello2\",\r\n    \"body\": \"Hello World! (Edited)\",\r\n    \"authorId\": 1,\r\n    \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/Message/",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"Message",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -226,19 +286,30 @@
 			"item": [
 				{
 					"name": "GetById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7159/Author/1",
-							"protocol": "https",
+							"raw": "{{BaseURL}}/Author/{{AuthorID}}",
 							"host": [
-								"localhost"
+								"{{BaseURL}}"
 							],
-							"port": "7159",
 							"path": [
 								"Author",
-								"1"
+								"{{AuthorID}}"
 							]
 						}
 					},
@@ -246,18 +317,183 @@
 				},
 				{
 					"name": "GetAll",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7159/Author",
-							"protocol": "https",
+							"raw": "{{BaseURL}}/Author/",
 							"host": [
-								"localhost"
+								"{{BaseURL}}"
 							],
-							"port": "7159",
 							"path": [
-								"Author"
+								"Author",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"A Name\",\r\n    \"surname\": \"A surname\",\r\n    \"id\": 1\r\n}"
+						},
+						"url": {
+							"raw": "{{BaseURL}}/Author/",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"Author",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const author = \r",
+									"{\r",
+									"    \"name\": \"A name\",\r",
+									"    \"surname\": \"A surname\",\r",
+									"    \"mail\": \"mail\"    \r",
+									"};\r",
+									"\r",
+									"const callOptions = {\r",
+									"    url: pm.environment.get('BaseURL') + '/Author',\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(author)\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.sendRequest(callOptions, function (err, response) {\r",
+									"    \r",
+									"    console.log(response)\r",
+									"\r",
+									"    if(err != null){\r",
+									"        console.log(\"An error occured retrieving Jakala Old SSO Token. Error: \" + err.json)\r",
+									"        return;\r",
+									"    }\r",
+									"    \r",
+									"    const jsonResponse=response.json();\r",
+									"    console.log(\"Response JSON: \"+ JSON.stringify(jsonResponse));\r",
+									"\r",
+									"    pm.environment.set('AuthorID', jsonResponse.id)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/Author/{{AuthorID}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"Author",
+								"{{AuthorID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Name (Edited)\",\r\n    \"surname\": \"Surname (Edited)\",\r\n    \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/Author/",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"Author",
+								""
 							]
 						}
 					},

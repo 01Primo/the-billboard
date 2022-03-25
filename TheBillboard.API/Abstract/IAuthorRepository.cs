@@ -7,7 +7,7 @@ public interface IAuthorRepository
 {
     Task<IEnumerable<Author>> GetAll();
     Task<Author?> GetById(int id);
-    AuthorDto Create(AuthorDto author);
-    AuthorDto Update(AuthorDto author);
-    bool Delete(int id);
+    Task<AuthorDto> Create(AuthorDto author);
+    Task<AuthorDto> Update(AuthorDto author);
+    Task<bool> Delete(int id);
 }

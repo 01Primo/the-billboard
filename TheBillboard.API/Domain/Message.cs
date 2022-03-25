@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public record Message
+public record Message 
 {
     public Message(
         string title = "",

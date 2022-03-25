@@ -1,9 +1,10 @@
 ﻿namespace TheBillboard.API.Abstract;
 
+using Domain;
 public interface IWriter
 {
-    Task<bool> WriteAsync(string query, object objectToBindToQuery);
-    Task<bool> UpdateAsync(string query, object objectToBindToQuery);
-    Task<bool> DeleteAsync(string query, object objectToBindToQuery);
-    Task<int?> WriteAndReturnIdAsync(string query, object objectToBindToQuery);
+    Task<bool> WriteAsync<TEntity>(string query, TEntity objectToBindToQuery);
+    Task<bool> UpdateAsync<TEntity>(string query, TEntity objectToBindToQuery);
+    Task<bool> DeleteAsync<TEntity>(string query, TEntity objectToBindToQuery);
+    Task<int?> WriteAndReturnIdAsync<TEntity>(string query, TEntity objectToBindToQuery);
 }

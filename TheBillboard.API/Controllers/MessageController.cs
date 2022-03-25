@@ -17,13 +17,13 @@ public class MessageController : ControllerBase
     {
         _messageRepository = messageRepository;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _messageRepository.GetAll());
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
@@ -33,14 +33,14 @@ public class MessageController : ControllerBase
 
             return message is not null
                 ? Ok(message)
-                : NotFound();    
+                : NotFound();
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] MessageDto message)
     {
@@ -52,8 +52,8 @@ public class MessageController : ControllerBase
         try
         {
             var created = await _messageRepository.Create(message);
-
-            return Ok(created);
+            
+            return Created($"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}/{created.Id}", created);
         }
         catch (Exception e)
         {
@@ -90,8 +90,8 @@ public class MessageController : ControllerBase
 
         try
         {
-            var updated = await _messageRepository.Delete(id);
-            return Ok(updated);
+            var success = await _messageRepository.Delete(id);
+            return success ? Ok(success) : Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
         catch (Exception e)
         {

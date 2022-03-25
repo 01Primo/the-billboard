@@ -15,7 +15,7 @@ public class MessageRepository : IMessageRepository
                 Id = 1,
                 Name = "John",
                 Surname = "Doe",
-                Email = "john.dow.mail.com",
+                Mail = "john.dow.mail.com",
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             },
@@ -33,7 +33,7 @@ public class MessageRepository : IMessageRepository
                 Id = 2,
                 Name = "Jane",
                 Surname = "Doe",
-                Email = "jane.doe.mail.com",
+                Mail = "jane.doe.mail.com",
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             },
@@ -101,7 +101,7 @@ public class MessageRepository : IMessageRepository
                             VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
 
         var newMessage = new Message(message.Title, message.Body, message.AuthorId, default, DateTime.Now, DateTime.Now, default);
-        var newId = await _writer.WriteAndReturnIdAsync(query, newMessage);
+        var newId = await _writer.WriteAndReturnIdAsync<Message>(query, newMessage);
 
         return new MessageDto()
         {
@@ -120,28 +120,23 @@ public class MessageRepository : IMessageRepository
                             WHERE Id = @Id";
 
         var newMessage = new Message(message.Title, message.Body, message.AuthorId, default, default, DateTime.Now, updatedID);
-        var result = await _writer.UpdateAsync(query, newMessage);
+        var result = await _writer.UpdateAsync<Message>(query, newMessage);
 
         return new MessageDto()
         {
             Title = newMessage.Title,
             Body = newMessage.Body,
             AuthorId = newMessage.AuthorId,
-            Id = updatedID
+            Id = updatedID,
         };
     }
 
     public async Task<bool> Delete(int id)
     {
-        var index = _messages.FindIndex(x => x.Id == id);
-        if (index >= 0)
-        {
-            _messages.Remove(_messages[index]);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        const string query = @"DELETE FROM Message
+                            WHERE Id = @Id";
+
+        var newMessage = new Message(default, default, default, default, default, default, id);
+        return await _writer.DeleteAsync<Message>(query, newMessage);
     }
 }

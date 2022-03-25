@@ -39,7 +39,7 @@ public class AuthorController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] AuthorDto author)
+    public async Task<IActionResult> Create([FromBody] AuthorDto author)
     {
         if (!ModelState.IsValid)
         {
@@ -48,7 +48,7 @@ public class AuthorController : ControllerBase
 
         try
         {
-            var created = _authorRepository.Create(author);
+            var created = await _authorRepository.Create(author);
 
             return Ok(created);
         }
@@ -59,7 +59,7 @@ public class AuthorController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update([FromBody] AuthorDto author)
+    public async Task<IActionResult> Update([FromBody] AuthorDto author)
     {
         if (!ModelState.IsValid)
         {
@@ -68,7 +68,7 @@ public class AuthorController : ControllerBase
 
         try
         {
-            var updated = _authorRepository.Update(author);
+            var updated = await _authorRepository.Update(author);
             return Ok(updated);
         }
         catch (Exception e)
@@ -78,7 +78,7 @@ public class AuthorController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         if (!ModelState.IsValid)
         {
@@ -87,8 +87,8 @@ public class AuthorController : ControllerBase
 
         try
         {
-            var updated = _authorRepository.Delete(id);
-            return Ok(updated);
+            var success = await _authorRepository.Delete(id);
+            return success ? Ok(success) : Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
         catch (Exception e)
         {
