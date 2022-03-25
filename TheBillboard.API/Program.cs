@@ -2,6 +2,7 @@ using TheBillboard.API.Abstract;
 using TheBillboard.API.Options;
 using TheBillboard.API.Readers;
 using TheBillboard.API.Repositories;
+using TheBillboard.API.Writers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<IAuthorRepository, AuthorRepository>();
 builder.Services.AddSingleton<IReader, SqlReader>();
+builder.Services.AddSingleton<IWriter, SqlWriter>();
 
 var app = builder.Build();
 

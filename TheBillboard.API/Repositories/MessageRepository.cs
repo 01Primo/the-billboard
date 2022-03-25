@@ -47,10 +47,12 @@ public class MessageRepository : IMessageRepository
     };
     
     private readonly IReader _reader;
-    
-    public MessageRepository(IReader reader)
+    private readonly IWriter _writer;
+
+    public MessageRepository(IReader reader, IWriter writer)
     {
         _reader = reader;
+        _writer = writer;
     }
     public Task<IEnumerable<Message>> GetAll()
     {
@@ -90,20 +92,51 @@ public class MessageRepository : IMessageRepository
         return await _reader.GetByIdAsync<Message>(query, id);
     }
 
-    public MessageDto Create(MessageDto message)
+    public async Task<MessageDto?> Create(MessageDto message)
     {
-        var lastId = _messages.Max(m => m.Id);
-        var newId = (lastId ?? 0) + 1;
-        
-        var newMessage = new Message(newId, message.Title, message.Body, message.AuthorId, DateTime.Now, default);
-        _messages.Add(newMessage);
-        
-        return new MessageDto()
+        const string query = "insert into [Message] (Title, Body, CreatedAt, AuthorId)" +
+                             " output inserted.Id" +
+                             " values (@Title, @Body, @CreatedAt, @AuthorId)";
+
+        var parameters = new 
         {
-            Title = newMessage.Title,
-            Body = newMessage.Body,
-            AuthorId = newMessage.AuthorId,
-            Id = newId
+            Title = message.Title,
+            Body = message.Body,
+            CreatedAt = DateTime.Now,
+            AuthorId = message.AuthorId
         };
+        var newId = await _writer.CreateAsync(query, parameters);
+        var newMessage = message with { Id = newId };
+        return newMessage;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        const string query = @"DELETE FROM Message
+                      WHERE (Id=@Id)";
+
+        var rowsAffected = await _writer.WriteAsync(query, new{Id = id});
+        return rowsAffected > 0;
+    }
+
+    public async Task<MessageDto?> Update(int id, MessageDto message)
+    {
+        const string query = @"UPDATE Message
+                      SET Title=@Title,Body=@Body,UpdatedAt=@UpdatedAt,AuthorId=@AuthorId
+                      WHERE (Id=@Id)";
+
+        var parameters = new
+        {
+            Title = message.Title,
+            Body = message.Body,
+            UpdatedAt = DateTime.Now,
+            AuthorId = message.AuthorId,
+            Id = id
+        };
+
+        var rowsAffected = await _writer.WriteAsync(query, parameters);
+        var updatedMessage = message with { Id = id };
+
+        return rowsAffected > 0 ? updatedMessage : null;
     }
 }

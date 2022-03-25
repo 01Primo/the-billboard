@@ -10,7 +10,7 @@ public record Author
     DateTime? UpdatedAt = null
 )
 {
-    public Author(int id, string name, string surname, string? mail, DateTime? createdAt) : this(name, surname, id, mail, createdAt)
+    public Author(int id, string name, string surname, string? mail, DateTime? createdAt, DateTime? updatedAt) : this(name, surname, id, mail, createdAt, updatedAt)
     {
     }
 

@@ -34,7 +34,7 @@ public record Message
     {
     }
 
-    public Message(int id, string title, string body, int authorId, string name, string surname, string email, DateTime messageCreatedAt, DateTime messageUpdatedAt, DateTime authorCreatedAt)
+    public Message(int id, string title, string body, int authorId, string name, string surname, string email, DateTime? messageCreatedAt, DateTime? messageUpdatedAt, DateTime? authorCreatedAt)
     {
         Id = id;
         Title = title;
