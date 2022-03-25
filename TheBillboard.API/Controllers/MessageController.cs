@@ -42,7 +42,7 @@ public class MessageController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult Create([FromBody] MessageDto message)
+    public async Task<IActionResult> Create([FromBody] MessageDto message)
     {
         if (!ModelState.IsValid)
         {
@@ -51,9 +51,47 @@ public class MessageController : ControllerBase
 
         try
         {
-            var created = _messageRepository.Create(message);
+            var created = await _messageRepository.Create(message);
 
             return Ok(created);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] MessageDto message)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var updated = await _messageRepository.Update(message);
+            return Ok(updated);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var updated = await _messageRepository.Delete(id);
+            return Ok(updated);
         }
         catch (Exception e)
         {

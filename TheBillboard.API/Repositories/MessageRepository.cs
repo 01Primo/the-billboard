@@ -45,12 +45,14 @@ public class MessageRepository : IMessageRepository
             AuthorId = 2
         }
     };
-    
+
     private readonly IReader _reader;
-    
-    public MessageRepository(IReader reader)
+    private readonly IWriter _writer;
+
+    public MessageRepository(IReader reader, IWriter writer)
     {
         _reader = reader;
+        _writer = writer;
     }
     public Task<IEnumerable<Message>> GetAll()
     {
@@ -82,7 +84,7 @@ public class MessageRepository : IMessageRepository
                                 ", M.CreatedAt as MessageCreatedAt" +
                                 ", M.UpdatedAt as MessageUpdatedAt" +
                                 ", A.CreatedAt as AuthorCreatedAt" +
-                                " " + 
+                                " " +
                                 "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
                                 " " +
                                 "WHERE M.Id=@Id";
@@ -90,14 +92,17 @@ public class MessageRepository : IMessageRepository
         return await _reader.GetByIdAsync<Message>(query, id);
     }
 
-    public MessageDto Create(MessageDto message)
+    public async Task<MessageDto> Create(MessageDto message)
     {
-        var lastId = _messages.Max(m => m.Id);
-        var newId = (lastId ?? 0) + 1;
-        
-        var newMessage = new Message(newId, message.Title, message.Body, message.AuthorId, DateTime.Now, default);
-        _messages.Add(newMessage);
-        
+
+        const string query = @"INSERT INTO Message
+                            (Title, Body, CreatedAt, UpdatedAt, AuthorId)
+                            OUTPUT INSERTED.Id
+                            VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
+
+        var newMessage = new Message(message.Title, message.Body, message.AuthorId, default, DateTime.Now, DateTime.Now, default);
+        var newId = await _writer.WriteAndReturnIdAsync(query, newMessage);
+
         return new MessageDto()
         {
             Title = newMessage.Title,
@@ -105,5 +110,38 @@ public class MessageRepository : IMessageRepository
             AuthorId = newMessage.AuthorId,
             Id = newId
         };
+
+    }
+    public async Task<MessageDto> Update(MessageDto message)
+    {
+        var updatedID = message.Id;
+        const string query = @"UPDATE Message
+                            SET Title = @Title, Body = @Body, UpdatedAt = @UpdatedAt, AuthorId = @AuthorId
+                            WHERE Id = @Id";
+
+        var newMessage = new Message(message.Title, message.Body, message.AuthorId, default, default, DateTime.Now, updatedID);
+        var result = await _writer.UpdateAsync(query, newMessage);
+
+        return new MessageDto()
+        {
+            Title = newMessage.Title,
+            Body = newMessage.Body,
+            AuthorId = newMessage.AuthorId,
+            Id = updatedID
+        };
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var index = _messages.FindIndex(x => x.Id == id);
+        if (index >= 0)
+        {
+            _messages.Remove(_messages[index]);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

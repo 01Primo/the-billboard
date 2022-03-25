@@ -1,5 +1,6 @@
 ﻿using TheBillboard.API.Abstract;
 using TheBillboard.API.Domain;
+using TheBillboard.API.Dtos;
 
 namespace TheBillboard.API.Repositories;
 
@@ -27,5 +28,22 @@ public class AuthorRepository : IAuthorRepository
                        WHERE Id=@Id";
 
         return _reader.GetByIdAsync<Author>(query, id);
+    }
+
+    public AuthorDto Create(AuthorDto author)
+    {
+        //TODO
+        return new AuthorDto();
+}
+    public AuthorDto Update(AuthorDto author)
+    {
+        //TODO
+        return new AuthorDto();
+    }
+
+    public bool Delete(int id)
+    {
+        //TODO
+        return true;
     }
 }

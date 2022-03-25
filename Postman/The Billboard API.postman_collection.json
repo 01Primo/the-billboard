@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7dc92962-9894-4c4e-88c1-527ceed3d5d7",
+		"_postman_id": "4874c35c-c4d8-4430-aa21-2c5890e090f8",
 		"name": "The Billboard API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -30,6 +30,70 @@
 				},
 				{
 					"name": "GetAll",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response;\r",
+									"const responseData = response.json();\r",
+									"const expectedSchema = {\r",
+									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
+									"    \"type\": \"array\",\r",
+									"            \"additionalItems\": false,\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"required\": [\r",
+									"                    \"id\",\r",
+									"                    \"title\",\r",
+									"                    \"body\",\r",
+									"                    \"authorId\",\r",
+									"                    \"createdAt\",\r",
+									"                    \"updatedAt\",\r",
+									"                ]\r",
+									"            },\r",
+									"            \"properties\": {\r",
+									"                \"id\" : {\r",
+									"                    \"type\": \"integer\"\r",
+									"                },\r",
+									"                \"title\": {\r",
+									"                    \"type\": \"integer\"\r",
+									"                }, \r",
+									"                \"author\": {\r",
+									"                    \"type\": \"object\",\r",
+									"                    \"required\": [\r",
+									"                                    \"id\",\r",
+									"                                    \"surname\",\r",
+									"                                    \"name\",\r",
+									"                                    \"email\",\r",
+									"                                    \"createdAt\",\r",
+									"                                    \"updatedAt\"\r",
+									"                                ],\r",
+									"                                \"properties\": {\r",
+									"                                    \"id\": {\r",
+									"                                        \"type\": \"integer\"\r",
+									"                                    },\r",
+									"                                    \"surname\": {\r",
+									"                                        \"type\": \"integer\"\r",
+									"                                    }\r",
+									"                                }\r",
+									"                            }\r",
+									"            }\r",
+									"}  \r",
+									"            \r",
+									"\r",
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Schema is valid', function() {\r",
+									"  pm.response.to.have.jsonSchema(expectedSchema);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -42,6 +106,114 @@
 							"port": "7159",
 							"path": [
 								"Message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Hello\",\r\n    \"body\": \"Hello World!\",\r\n    \"authorId\": 1\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7159/Message",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7159",
+							"path": [
+								"Message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const message = \r",
+									"{\r",
+									"    \"title\": \"Hello\",\r",
+									"    \"body\": \"Hello World!\",\r",
+									"    \"authorId\": 1\r",
+									"};\r",
+									"\r",
+									"const callOptions = {\r",
+									"    url: pm.environment.get('BaseURL') + '/Message',\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(message)\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.sendRequest(callOptions, function (err, response) {\r",
+									"    \r",
+									"    console.log(response)\r",
+									"\r",
+									"    if(err != null){\r",
+									"        console.log(\"An error occured retrieving Jakala Old SSO Token. Error: \" + err.json)\r",
+									"        return;\r",
+									"    }\r",
+									"    \r",
+									"    const jsonResponse=response.json();\r",
+									"    console.log(\"Response JSON: \"+ JSON.stringify(jsonResponse));\r",
+									"\r",
+									"    pm.environment.set('MessageID', jsonResponse.id)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Basic OK\", function(){\r",
+									"    response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{BaseURL}}/Message/{{MessageID}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"Message",
+								"{{MessageID}}"
 							]
 						}
 					},
