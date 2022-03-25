@@ -34,7 +34,7 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -57,7 +57,7 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -74,7 +74,7 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -91,7 +91,7 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 }

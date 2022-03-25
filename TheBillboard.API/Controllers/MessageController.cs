@@ -37,7 +37,7 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -60,7 +60,7 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -77,7 +77,7 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -94,7 +94,7 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 }
