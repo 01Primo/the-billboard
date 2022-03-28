@@ -2,8 +2,13 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public record Message
+public record Message : BaseEntity
 {
+    public string Title { get; init; }
+    public string Body { get; init; }
+    public int AuthorId { get; init; }
+    public Author? Author { get; init; }
+
     public Message(
         string title = "",
         [Required(ErrorMessage = "Il campo Message e' obbligatorio")] [MinLength(5, ErrorMessage = "Il campo Message deve essere lungo almento 5 caratteri")]
@@ -44,20 +49,4 @@ public record Message
         UpdatedAt = messageUpdatedAt;
         Author = new Author(name, surname, authorId, email, CreatedAt: authorCreatedAt);
     }
-
-    public string Title { get; init; }
-    public string Body { get; init; }
-    public int AuthorId { get; init; }
-    public Author? Author { get; init; }
-    public DateTime? CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
-    public int? Id { get; init; }
-
-    public string FormattedCreatedAt => CreatedAt.HasValue
-        ? CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")
-        : string.Empty;
-
-    public string FormattedUpdatedAt => UpdatedAt.HasValue
-        ? UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm")
-        : string.Empty;
 }

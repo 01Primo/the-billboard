@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using Abstract;
 using Microsoft.Extensions.Options;
 using Options;
+using TheBillboard.API.Domain;
 
 public class SqlWriter : IWriter
 {
@@ -15,15 +16,23 @@ public class SqlWriter : IWriter
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<int?> CreateAsync(string query, object parameters)
+    public async Task<int> CreateAsync<TEntity>(string query, TEntity entity)
+        where TEntity : BaseEntity
     {
         await using var connection = new SqlConnection(_connectionString);
-        return await connection.ExecuteScalarAsync<int>(query, parameters);
+        return await connection.ExecuteScalarAsync<int>(query, entity);
     }
 
-    public async Task<int> WriteAsync(string query, object parameters)
+    public async Task<int> UpdateAsync<TEntity>(string query, TEntity entity)
+        where TEntity : BaseEntity
     {
         await using var connection = new SqlConnection(_connectionString);
-        return await connection.ExecuteAsync(query, parameters);
+        return await connection.ExecuteAsync(query, entity);
+    }
+
+    public async Task<int> DeleteByIdAsync(string query, int id)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        return await connection.ExecuteAsync(query, new { Id = id});
     }
 }

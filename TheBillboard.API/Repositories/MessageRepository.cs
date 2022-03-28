@@ -45,7 +45,7 @@ public class MessageRepository : IMessageRepository
             AuthorId = 2
         }
     };
-    
+
     private readonly IReader _reader;
     private readonly IWriter _writer;
 
@@ -84,7 +84,7 @@ public class MessageRepository : IMessageRepository
                                 ", M.CreatedAt as MessageCreatedAt" +
                                 ", M.UpdatedAt as MessageUpdatedAt" +
                                 ", A.CreatedAt as AuthorCreatedAt" +
-                                " " + 
+                                " " +
                                 "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
                                 " " +
                                 "WHERE M.Id=@Id";
@@ -98,25 +98,9 @@ public class MessageRepository : IMessageRepository
                              " output inserted.Id" +
                              " values (@Title, @Body, @CreatedAt, @AuthorId)";
 
-        var parameters = new 
-        {
-            Title = message.Title,
-            Body = message.Body,
-            CreatedAt = DateTime.Now,
-            AuthorId = message.AuthorId
-        };
-        var newId = await _writer.CreateAsync(query, parameters);
-        var newMessage = message with { Id = newId };
-        return newMessage;
-    }
-
-    public async Task<bool> Delete(int id)
-    {
-        const string query = @"DELETE FROM Message
-                      WHERE (Id=@Id)";
-
-        var rowsAffected = await _writer.WriteAsync(query, new{Id = id});
-        return rowsAffected > 0;
+        var messageEntity = new Message(null, message.Title, message.Body, message.AuthorId, DateTime.Now, null);
+        var newId = await _writer.CreateAsync(query, messageEntity);
+        return message with { Id = newId };
     }
 
     public async Task<MessageDto?> Update(int id, MessageDto message)
@@ -125,18 +109,19 @@ public class MessageRepository : IMessageRepository
                       SET Title=@Title,Body=@Body,UpdatedAt=@UpdatedAt,AuthorId=@AuthorId
                       WHERE (Id=@Id)";
 
-        var parameters = new
-        {
-            Title = message.Title,
-            Body = message.Body,
-            UpdatedAt = DateTime.Now,
-            AuthorId = message.AuthorId,
-            Id = id
-        };
-
-        var rowsAffected = await _writer.WriteAsync(query, parameters);
+        var messageEntity = new Message(id, message.Title, message.Body, message.AuthorId, null, DateTime.Now);
+        var rowsAffected = await _writer.UpdateAsync(query, messageEntity);
         var updatedMessage = message with { Id = id };
 
         return rowsAffected > 0 ? updatedMessage : null;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        const string query = @"DELETE FROM Message
+                      WHERE (Id=@Id)";
+
+        var rowsAffected = await _writer.DeleteByIdAsync(query, id);
+        return rowsAffected > 0;
     }
 }

@@ -34,50 +34,34 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task<AuthorDto?> Create(AuthorDto author)
     {
-        const string query = "insert into Author(Name, Surname, Mail, CreatedAt)" + 
+        const string query = "insert into Author(Name, Surname, Mail, CreatedAt)" +
                              " output inserted.Id" +
-                             " values (@Name, @Surname, @Mail, @CreatedAt)";
+                             " values (@Name, @Surname, @Email, @CreatedAt)";
 
-        var parameters = new 
-        {
-            Name = author.Name,
-            Surname = author.Surname,
-            Mail = author.Email,
-            CreatedAt = DateTime.Now
-        };
-        var newId = await _writer.CreateAsync(query, parameters);
-        var newAuthor = author with { Id = newId };
-        return newAuthor;
-    }
-
-    public async Task<bool> Delete(int id)
-    {
-        const string query = "delete from [Author]" + 
-                             " where (Id=@Id)";
-        
-
-        var rowsAffected = await _writer.WriteAsync(query, new{Id = id});
-        return rowsAffected > 0;
+        var authorEntity = new Author(null, author.Name, author.Surname, author.Email, DateTime.Now, null);
+        var newId = await _writer.CreateAsync(query, authorEntity);
+        return author with { Id = newId };
     }
 
     public async Task<AuthorDto?> Update(int id, AuthorDto author)
     {
         const string query = "update Author" +
-                             " set Name=@Name,Surname=@Surname,Mail=@Mail,UpdatedAt=@UpdatedAt" +
+                             " set Name=@Name,Surname=@Surname,Mail=@Email,UpdatedAt=@UpdatedAt" +
                              " where (Id=@Id)";
 
-        var parameters = new
-        {
-            Name = author.Name,
-            Surname = author.Surname,
-            Mail = author.Email,
-            UpdatedAt = DateTime.Now,
-            Id = id
-        };
+        var authorEntity = new Author(id, author.Name, author.Surname, author.Email, null, DateTime.Now);
+        var rowsAffected = await _writer.UpdateAsync(query, authorEntity);
+        var updatedAuthor = author with { Id = id };
 
-        var rowsAffected = await _writer.WriteAsync(query, parameters);
-        var updatedMessage = author with { Id = id };
+        return rowsAffected > 0 ? updatedAuthor : null;
+    }
 
-        return rowsAffected > 0 ? updatedMessage : null;
+    public async Task<bool> Delete(int id)
+    {
+        const string query = "delete from [Author]" +
+                             " where (Id=@Id)";
+
+        var rowsAffected = await _writer.DeleteByIdAsync(query, id);
+        return rowsAffected > 0;
     }
 }

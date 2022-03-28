@@ -1,7 +1,12 @@
-﻿namespace TheBillboard.API.Abstract;
+﻿using TheBillboard.API.Domain;
+
+namespace TheBillboard.API.Abstract;
 
 public interface IWriter
 {
-    Task<int> WriteAsync(string query, object parameters);
-    Task<int?> CreateAsync(string query, object parameters);
+    Task<int> CreateAsync<TEntity>(string query, TEntity entity)
+        where TEntity : BaseEntity;
+    Task<int> UpdateAsync<TEntity>(string query, TEntity entity)
+        where TEntity : BaseEntity;
+    Task<int> DeleteByIdAsync(string query, int id);
 }
