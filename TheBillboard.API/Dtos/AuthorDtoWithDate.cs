@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 public class AuthorDtoWithDate : AuthorDto
 {
     [Required]
-    public DateTime CreatedAt { get; init; }
+    public DateTime? CreatedAt { get; init; }
     [Required]
-    public DateTime UpdatedAt { get; init; }
+    public DateTime? UpdatedAt { get; init; }
 }

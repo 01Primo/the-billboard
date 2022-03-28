@@ -14,7 +14,7 @@ public class MessageRepository : IMessageRepository
         _reader = reader;
         _writer = writer;
     }
-    public Task<IEnumerable<Message>> GetAll()
+    public async Task<IEnumerable<MessageDtoWithDateAndAuthor>> GetAll()
     {
         const string query = @"SELECT M.Id
                                 , M.Title
@@ -29,10 +29,35 @@ public class MessageRepository : IMessageRepository
                                 , A.UpdatedAt as AuthorUpdatedAt
                                  FROM Message M JOIN Author A ON A.Id = M.AuthorId";
 
-        return _reader.QueryAsync<Message>(query);
+        var messageList = await _reader.QueryAsync<Message>(query);
+        var messageDtoList = new List<MessageDtoWithDateAndAuthor>();
+        foreach (var message in messageList)
+        {
+            messageDtoList.Add(
+                new MessageDtoWithDateAndAuthor()
+                {
+                    Title = message.Title,
+                    Body = message.Body,
+                    AuthorId = message.AuthorId,
+                    Id = message.Id,
+                    CreatedAt = message.CreatedAt,
+                    UpdatedAt = message.UpdatedAt,
+                    Author = new()
+                    {
+                        Id = message.AuthorId,
+                        Name = message.Author.Name,
+                        Surname = message.Author.Surname,
+                        Mail = message.Author.Mail,
+                        CreatedAt = message.Author.CreatedAt,
+                        UpdatedAt = message.Author.UpdatedAt
+                    }
+                }
+            );
+        }
+        return messageDtoList;
     }
 
-    public async Task<Message?> GetById(int id)
+    public async Task<MessageDtoWithDateAndAuthor?> GetById(int id)
     {
         const string query = @"SELECT M.Id
                                 , M.Title
@@ -48,7 +73,25 @@ public class MessageRepository : IMessageRepository
                                  FROM Message M JOIN Author A ON A.Id = M.AuthorId                               
                                  WHERE M.Id=@Id";
 
-        return await _reader.GetByIdAsync<Message>(query, id);
+        var newMessage = await _reader.GetByIdAsync<Message>(query, id);
+        return new MessageDtoWithDateAndAuthor()
+        {
+            Title = newMessage.Title,
+            Body = newMessage.Body,
+            AuthorId = newMessage.AuthorId,
+            Id = id,
+            CreatedAt = newMessage.CreatedAt,
+            UpdatedAt = newMessage.UpdatedAt,
+            Author = new()
+            {
+                Id = newMessage.AuthorId,
+                Name = newMessage.Author.Name,
+                Surname = newMessage.Author.Surname,
+                Mail = newMessage.Author.Mail,
+                CreatedAt = newMessage.Author.CreatedAt,
+                UpdatedAt = newMessage.Author.UpdatedAt
+            }
+        };
     }
 
     public async Task<MessageDto> Create(MessageDto message)
