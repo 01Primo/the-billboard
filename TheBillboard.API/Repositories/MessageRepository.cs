@@ -6,46 +6,6 @@ using Dtos;
 
 public class MessageRepository : IMessageRepository
 {
-    /*private readonly List<Message> _messages = new()
-    {
-        new()
-        {
-            Author = new Author()
-            {
-                Id = 1,
-                Name = "John",
-                Surname = "Doe",
-                Mail = "john.dow.mail.com",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            },
-            Id = 1,
-            Title = "Hello",
-            Body = "Hello World!",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AuthorId = 1
-        },
-        new()
-        {
-            Author = new Author()
-            {
-                Id = 2,
-                Name = "Jane",
-                Surname = "Doe",
-                Mail = "jane.doe.mail.com",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            },
-            Id = 2,
-            Title = "Hi",
-            Body = "Hi World!",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AuthorId = 2
-        }
-    };*/
-
     private readonly IReader _reader;
     private readonly IWriter _writer;
 

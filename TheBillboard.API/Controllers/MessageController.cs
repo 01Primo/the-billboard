@@ -91,7 +91,7 @@ public class MessageController : ControllerBase
         try
         {
             var success = await _messageRepository.Delete(id);
-            return success ? Ok(success) : Problem(statusCode: StatusCodes.Status500InternalServerError);
+            return success ? Ok() : Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
         catch (Exception e)
         {

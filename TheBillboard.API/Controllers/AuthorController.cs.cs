@@ -88,7 +88,7 @@ public class AuthorController : ControllerBase
         try
         {
             var success = await _authorRepository.Delete(id);
-            return success ? Ok(success) : Problem(statusCode: StatusCodes.Status500InternalServerError);
+            return success ? Ok() : Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
         catch (Exception e)
         {

@@ -15,21 +15,47 @@ public class AuthorRepository : IAuthorRepository
         _writer = writer;
     }
 
-    public async Task<IEnumerable<Author>> GetAll()
+    public async Task<IEnumerable<AuthorDtoWithDate>> GetAll()
     {
         const string query = @"SELECT Id, Name, Surname, Mail, CreatedAt, UpdatedAt
                                FROM Author";
 
-        return await _reader.QueryAsync<Author>(query);
+        var authorList = await _reader.QueryAsync<Author>(query);
+        var authorDtoList = new List<AuthorDtoWithDate>();
+        foreach (var author in authorList)
+        {
+            authorDtoList.Add(
+                new AuthorDtoWithDate()
+                {
+                    Name = author.Name,
+                    Surname = author.Surname,
+                    Mail = author.Mail,
+                    Id = author.Id,
+                    CreatedAt = (DateTime)author.CreatedAt!,
+                    UpdatedAt = (DateTime)author.UpdatedAt!
+                }
+            );
+        }
+        return authorDtoList;
     }
 
-    public async Task<Author?> GetById(int id)
+    public async Task<AuthorDtoWithDate?> GetById(int id)
     {
         var query = $@"SELECT Id, Name, Surname, Mail, CreatedAt, UpdatedAt
                        FROM Author
                        WHERE Id=@Id";
 
-        return await _reader.GetByIdAsync<Author>(query, id);
+        var newAuthor = await _reader.GetByIdAsync<Author>(query, id);
+        if (newAuthor is null) return null;
+        return new AuthorDtoWithDate()
+        {
+            Name = newAuthor.Name,
+            Surname = newAuthor.Surname,
+            Mail = newAuthor.Mail,
+            Id = newAuthor.Id,
+            CreatedAt = (DateTime)newAuthor.CreatedAt!,
+            UpdatedAt = (DateTime)newAuthor.UpdatedAt!
+        };
     }
 
     public async Task<AuthorDto> Create(AuthorDto author)
