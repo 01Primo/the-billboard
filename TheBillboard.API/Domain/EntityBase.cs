@@ -1,6 +1,6 @@
 ﻿namespace TheBillboard.API.Domain;
 
-public abstract record BaseEntity(
+public abstract record EntityBase(
     int? Id = default,
     DateTime? CreatedAt = null,
     DateTime? UpdatedAt = null

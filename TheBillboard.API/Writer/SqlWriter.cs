@@ -17,14 +17,14 @@ public class SqlWriter : IWriter
     }
 
     public async Task<int> CreateAsync<TEntity>(string query, TEntity entity)
-        where TEntity : BaseEntity
+        where TEntity : EntityBase
     {
         await using var connection = new SqlConnection(_connectionString);
         return await connection.ExecuteScalarAsync<int>(query, entity);
     }
 
     public async Task<int> UpdateAsync<TEntity>(string query, TEntity entity)
-        where TEntity : BaseEntity
+        where TEntity : EntityBase
     {
         await using var connection = new SqlConnection(_connectionString);
         return await connection.ExecuteAsync(query, entity);

@@ -8,7 +8,7 @@ public record Author
     string? Email = "",
     DateTime? CreatedAt = null,
     DateTime? UpdatedAt = null
-) : BaseEntity(Id, CreatedAt, UpdatedAt)
+) : EntityBase(Id, CreatedAt, UpdatedAt)
 {
     public Author(int? id, string name, string surname, string? mail, DateTime? createdAt, DateTime? updatedAt) : this(name, surname, id, mail, createdAt, updatedAt)
     {

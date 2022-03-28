@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public record Message : BaseEntity
+public record Message : EntityBase
 {
     public string Title { get; init; }
     public string Body { get; init; }
