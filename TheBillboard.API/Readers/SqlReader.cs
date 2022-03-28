@@ -6,6 +6,7 @@ using Abstract;
 using Dapper;
 using Microsoft.Extensions.Options;
 using Options;
+using Domain;
 
 public class SqlReader : IReader
 {
@@ -16,17 +17,17 @@ public class SqlReader : IReader
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query)
+    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query) where TEntity : BaseObject
     {
-        await using var conn = new SqlConnection {ConnectionString = _connectionString};
+        await using var conn = new SqlConnection { ConnectionString = _connectionString };
         return await conn.QueryAsync<TEntity>(query, commandType: CommandType.Text, commandTimeout: 10);
     }
 
-    public async Task<TEntity?> GetByIdAsync<TEntity>(string query, int id)
+    public async Task<TEntity?> GetByIdAsync<TEntity>(string query, int id) where TEntity : BaseObject
     {
-        await using var conn = new SqlConnection {ConnectionString = _connectionString};
+        await using var conn = new SqlConnection { ConnectionString = _connectionString };
         IEnumerable<TEntity?> result = await conn.QueryAsync<TEntity>(query, param: new { Id = id }, commandType: CommandType.Text, commandTimeout: 10);
-        
+
         return result.FirstOrDefault();
     }
 }

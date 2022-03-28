@@ -39,7 +39,7 @@ public class AuthorRepository : IAuthorRepository
                             OUTPUT INSERTED.Id
                             VALUES (@Name, @Surname, @Mail, @CreatedAt, @UpdatedAt)";
 
-        var newAuthor = new Author(author.Name, author.Surname, default, author.Mail, DateTime.Now, DateTime.Now);
+        var newAuthor = new Author(default, author.Name, author.Surname, author.Mail, DateTime.Now, DateTime.Now);
         var newId = await _writer.WriteAndReturnIdAsync<Author>(query, newAuthor);
 
         return new AuthorDto()
@@ -58,7 +58,7 @@ public class AuthorRepository : IAuthorRepository
                             SET Name = @Name, Surname = @Surname, Mail = @Mail, UpdatedAt = @UpdatedAt
                             WHERE Id = @Id";
 
-        var newAuthor = new Author(author.Name, author.Surname, updatedID, author.Mail, default, DateTime.Now);
+        var newAuthor = new Author(updatedID, author.Name, author.Surname, author.Mail, default, DateTime.Now);
         var result = await _writer.UpdateAsync<Author>(query, newAuthor);
 
         return new AuthorDto()
@@ -66,7 +66,7 @@ public class AuthorRepository : IAuthorRepository
             Name = newAuthor.Name,
             Surname = newAuthor.Surname,
             Id = updatedID,
-            Mail = newAuthor.Mail            
+            Mail = newAuthor.Mail
         };
     }
 
@@ -75,7 +75,7 @@ public class AuthorRepository : IAuthorRepository
         const string query = @"DELETE FROM Author
                             WHERE Id = @Id";
 
-        var newAuthor = new Author(default, default, id, default, default, default);
+        var newAuthor = new Author(id, default, default, default, default, default);
         return await _writer.DeleteAsync<Author>(query, newAuthor);
     }
 }

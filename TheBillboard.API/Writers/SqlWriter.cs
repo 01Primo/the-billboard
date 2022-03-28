@@ -16,30 +16,26 @@ public class SqlWriter : IWriter
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<int?> WriteAndReturnIdAsync<TEntity>(string query, TEntity objectToBindToQuery)
+    public async Task<int?> WriteAndReturnIdAsync<TEntity>(string query, TEntity objectToBindToQuery) where TEntity : BaseObject
     {
         await using var connection = new SqlConnection(_connectionString);
-        var insertedId = await connection.ExecuteScalarAsync(query,
-                                                         objectToBindToQuery,
-                                                         commandTimeout: 10) as int?;
+        var insertedId = await connection.ExecuteScalarAsync(query, objectToBindToQuery, commandTimeout: 10) as int?;
         return insertedId;
     }
-    public async Task<bool> WriteAsync<TEntity>(string query, TEntity objectToBindToQuery)
+
+    public async Task<bool> WriteAsync<TEntity>(string query, TEntity objectToBindToQuery) where TEntity : BaseObject
     {
         await using var connection = new SqlConnection(_connectionString);
-        var affectedRows = await connection.ExecuteAsync(query,
-                                                         objectToBindToQuery,
-                                                         commandTimeout: 10);
+        var affectedRows = await connection.ExecuteAsync(query, objectToBindToQuery, commandTimeout: 10);
         return affectedRows > 0;
     }
 
-    public async Task<bool> UpdateAsync<TEntity>(string query, TEntity objectToBindToQuery) => await WriteAsync(query, objectToBindToQuery);
-    public async Task<bool> DeleteAsync<TEntity>(string query, TEntity objectToBindToQuery)
+    public async Task<bool> UpdateAsync<TEntity>(string query, TEntity objectToBindToQuery) where TEntity : BaseObject => await WriteAsync(query, objectToBindToQuery);
+
+    public async Task<bool> DeleteAsync<TEntity>(string query, TEntity objectToBindToQuery) where TEntity : BaseObject
     {
         await using var connection = new SqlConnection(_connectionString);
-        var affectedRows = await connection.ExecuteAsync(query,
-                                                         objectToBindToQuery,
-                                                         commandTimeout: 10);
+        var affectedRows = await connection.ExecuteAsync(query, objectToBindToQuery, commandTimeout: 10);
         return affectedRows > 0;
     }
 }

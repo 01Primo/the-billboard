@@ -2,56 +2,39 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public record Message 
+public record Message : BaseObject
 {
+    public string Title { get; init; }
+    public string Body { get; init; }
+    public int AuthorId { get; init; }
+    public Author? Author { get; init; }
+
     public Message(
+        int? id = default,
         string title = "",
         [Required(ErrorMessage = "Il campo Message e' obbligatorio")] [MinLength(5, ErrorMessage = "Il campo Message deve essere lungo almento 5 caratteri")]
         string body = "",
         int authorId = default,
         Author? author = default,
         DateTime? createdAt = default,
-        DateTime? updatedAt = default,
-        int? id = default)
+        DateTime? updatedAt = default
+        ) : base(id, createdAt, updatedAt)
     {
         Title = title;
         Body = body;
         AuthorId = authorId;
         Author = author;
-        CreatedAt = createdAt;
-        UpdatedAt = updatedAt;
-        Id = id;
-    }
-    
-    public Message(
-        int? id,
-        string title,
-        string body,
-        int authorId,
-        DateTime? createdAt,
-        DateTime? updatedAt
-        ) : this(title, body, authorId, default, createdAt, updatedAt, id)
-    {
     }
 
-    public Message(int id, string title, string body, int authorId, string name, string surname, string email, DateTime messageCreatedAt, DateTime messageUpdatedAt, DateTime authorCreatedAt)
+    public Message(int id, string title, string body, int authorId, string name, string surname, string email, 
+                   DateTime messageCreatedAt, DateTime messageUpdatedAt, DateTime authorCreatedAt, DateTime authorUpdatedAt)
+                   : base(id, messageCreatedAt, messageUpdatedAt)
     {
-        Id = id;
         Title = title;
         Body = body;
         AuthorId = authorId;
-        CreatedAt = messageCreatedAt;
-        UpdatedAt = messageUpdatedAt;
-        Author = new Author(name, surname, authorId, email, CreatedAt: authorCreatedAt);
+        Author = new Author(authorId, name, surname, email, CreatedAt: authorCreatedAt, UpdatedAt: authorUpdatedAt);
     }
-
-    public string Title { get; init; }
-    public string Body { get; init; }
-    public int AuthorId { get; init; }
-    public Author? Author { get; init; }
-    public DateTime? CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
-    public int? Id { get; init; }
 
     public string FormattedCreatedAt => CreatedAt.HasValue
         ? CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")

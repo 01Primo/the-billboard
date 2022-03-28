@@ -6,7 +6,7 @@ using Dtos;
 
 public class MessageRepository : IMessageRepository
 {
-    private readonly List<Message> _messages = new()
+    /*private readonly List<Message> _messages = new()
     {
         new()
         {
@@ -44,7 +44,7 @@ public class MessageRepository : IMessageRepository
             UpdatedAt = DateTime.Now,
             AuthorId = 2
         }
-    };
+    };*/
 
     private readonly IReader _reader;
     private readonly IWriter _writer;
@@ -56,38 +56,52 @@ public class MessageRepository : IMessageRepository
     }
     public Task<IEnumerable<Message>> GetAll()
     {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " +
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId";
+        const string query = @"SELECT M.Id
+                                , M.Title
+                                , M.Body
+                                , M.AuthorId 
+                                , A.Name
+                                , A.Surname
+                                , A.Mail as Email
+                                , M.CreatedAt as MessageCreatedAt
+                                , M.UpdatedAt as MessageUpdatedAt
+                                , A.CreatedAt as AuthorCreatedAt
+                                , A.UpdatedAt as AuthorUpdatedAt
+                                 FROM Message M JOIN Author A ON A.Id = M.AuthorId";
 
         return _reader.QueryAsync<Message>(query);
     }
 
     public async Task<Message?> GetById(int id)
     {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " +
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
-                                " " +
-                                "WHERE M.Id=@Id";
+        const string query = @"SELECT M.Id
+                                , M.Title
+                                , M.Body
+                                , M.AuthorId 
+                                , A.Name
+                                , A.Surname
+                                , A.Mail as Email
+                                , M.CreatedAt as MessageCreatedAt
+                                , M.UpdatedAt as MessageUpdatedAt
+                                , A.CreatedAt as AuthorCreatedAt
+                                , A.UpdatedAt as AuthorUpdatedAt
+                                 FROM Message M JOIN Author A ON A.Id = M.AuthorId                               
+                                 WHERE M.Id=@Id";
+
+        //"SELECT M.Id," +
+        //                    " M.Title" +
+        //                    ", M.Body" +
+        //                    ", M.AuthorId" +
+        //                    ", A.Name" +
+        //                    ", A.Surname" +
+        //                    ", A.Mail as Email" +
+        //                    ", M.CreatedAt as MessageCreatedAt" +
+        //                    ", M.UpdatedAt as MessageUpdatedAt" +
+        //                    ", A.CreatedAt as AuthorCreatedAt" +
+        //                    " " +
+        //                    "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
+        //                    " " +
+        //                    "WHERE M.Id=@Id";
 
         return await _reader.GetByIdAsync<Message>(query, id);
     }
@@ -100,7 +114,7 @@ public class MessageRepository : IMessageRepository
                             OUTPUT INSERTED.Id
                             VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
 
-        var newMessage = new Message(message.Title, message.Body, message.AuthorId, default, DateTime.Now, DateTime.Now, default);
+        var newMessage = new Message(default, message.Title, message.Body, message.AuthorId, default, DateTime.Now, DateTime.Now);
         var newId = await _writer.WriteAndReturnIdAsync<Message>(query, newMessage);
 
         return new MessageDto()
@@ -119,7 +133,7 @@ public class MessageRepository : IMessageRepository
                             SET Title = @Title, Body = @Body, UpdatedAt = @UpdatedAt, AuthorId = @AuthorId
                             WHERE Id = @Id";
 
-        var newMessage = new Message(message.Title, message.Body, message.AuthorId, default, default, DateTime.Now, updatedID);
+        var newMessage = new Message(updatedID, message.Title, message.Body, message.AuthorId, default, default, DateTime.Now);
         var result = await _writer.UpdateAsync<Message>(query, newMessage);
 
         return new MessageDto()
@@ -136,7 +150,7 @@ public class MessageRepository : IMessageRepository
         const string query = @"DELETE FROM Message
                             WHERE Id = @Id";
 
-        var newMessage = new Message(default, default, default, default, default, default, id);
+        var newMessage = new Message(id, default, default, default, default, default, default);
         return await _writer.DeleteAsync<Message>(query, newMessage);
     }
 }
