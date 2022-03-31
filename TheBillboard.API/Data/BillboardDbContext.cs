@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 public class BillboardDbContext : DbContext
 {
-    public DbSet<Author> Authors { get; set; } = null!;
-    public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<Author> Author { get; set; } = null!;
+    public DbSet<Message> Message { get; set; } = null!;
 
     public BillboardDbContext(DbContextOptions options) : base(options)
     {

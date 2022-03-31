@@ -3,58 +3,58 @@
 using Abstract;
 using Domain;
 using Dtos;
+using TheBillboard.API.Data;
 
 public class MessageRepository : IMessageRepository
 {
-    
-    private readonly IReader _reader;
-    
-    public MessageRepository(IReader reader)
-    {
-        _reader = reader;
-    }
-    public Task<IEnumerable<Message>> GetAll()
-    {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " +
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId";
 
-        return _reader.QueryAsync<Message>(query);
+    private readonly BillboardDbContext _context;
+
+    public MessageRepository(BillboardDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<Message>> GetAll()
+    {
+        //TODO: make asynchronous
+        var messages = _context
+            .Message
+            .Join(_context.Author,
+                  message => message.AuthorId,
+                  author => author.Id,
+                  (message, author) => new { Message = message, Author = author });
+
+        return messages;
     }
 
     public async Task<Message?> GetById(int id)
     {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " + 
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
-                                " " +
-                                "WHERE M.Id=@Id";
+        //TODO: make asynchronous
+        var messages = _context
+            .Message
+            .Join(_context.Author,
+                  message => message.AuthorId,
+                  author => author.Id,
+                  (message, author) => new { Message = message, Author = author })
+            .Where(messageAndAuthor => messageAndAuthor.Message.AuthorId == id);
 
-        return await _reader.GetByIdAsync<Message>(query, id);
+        return messages;
     }
 
     public MessageDto Create(MessageDto message)
     {
-        var newId = 1;
-        
+        var lastId = _context
+            .Message
+            .Select(c => c.Id)
+            .Max();
+
+        if (lastId is null) lastId = 0;
+        var newId = lastId++;
+
+        _context.Add(new Message(message.Title, message.Body, DateTime.Now, DateTime.Now));
+        _context.SaveChangesAsync();
+
         return new MessageDto()
         {
             Title = message.Title,
