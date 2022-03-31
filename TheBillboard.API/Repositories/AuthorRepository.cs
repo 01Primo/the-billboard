@@ -1,31 +1,27 @@
 ﻿using TheBillboard.API.Abstract;
+using TheBillboard.API.Data;
 using TheBillboard.API.Domain;
 
 namespace TheBillboard.API.Repositories;
 
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly IReader _reader;
+    private readonly BillboardDbContext _context;
 
-    public AuthorRepository(IReader reader)
+    public AuthorRepository(BillboardDbContext context)
     {
-        _reader = reader;
+        _context = context;
     }
 
     public Task<IEnumerable<Author>> GetAll()
     {
-        const string query = @"SELECT Id, Name, Surname, Mail, CreatedAt
-                               FROM Author";
-
-        return _reader.QueryAsync<Author>(query);
+        var authors = _context.Author.Select(_ => _); // Select all
+        return (Task<IEnumerable<Author>>)authors;
     }
 
     public Task<Author?> GetById(int id)
     {
-        var query = $@"SELECT Id, Name, Surname, Mail, CreatedAt
-                       FROM Author
-                       WHERE Id=@Id";
-
-        return _reader.GetByIdAsync<Author>(query, id);
+        var author = _context.Author.Where(author => author.Id == id);
+        return (Task<Author?>)author;
     }
 }

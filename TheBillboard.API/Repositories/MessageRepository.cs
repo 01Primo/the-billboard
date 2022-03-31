@@ -15,9 +15,8 @@ public class MessageRepository : IMessageRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Message>> GetAll()
+    public Task<IEnumerable<Message>> GetAll()
     {
-        //TODO: make asynchronous
         var messages = _context
             .Message
             .Join(_context.Author,
@@ -26,7 +25,7 @@ public class MessageRepository : IMessageRepository
                   (message, author) => new { Message = message, Author = author })
             .Select(messageAndAuthor => messageAndAuthor.Message);
 
-        return messages;
+        return (Task<IEnumerable<Message>>)messages;
     }
 
     public async Task<Message?> GetById(int id)
