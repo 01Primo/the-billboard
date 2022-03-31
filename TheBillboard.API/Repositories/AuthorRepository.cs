@@ -13,15 +13,9 @@ public class AuthorRepository : IAuthorRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Author>> GetAll()
-    {
-        var authors = _context.Author.Select(_ => _); // Select all
-        return (Task<IEnumerable<Author>>)authors;
-    }
+    //TODO: find out why "messages" is in the JSON response and handle it
+    public async Task<IEnumerable<Author>> GetAll() => _context.Author;
 
-    public Task<Author?> GetById(int id)
-    {
-        var author = _context.Author.Where(author => author.Id == id);
-        return (Task<Author?>)author;
-    }
+    //TODO: find out why "messages" is in the JSON response and handle it
+    public async Task<Author?> GetById(int id) => _context.Author.Find(id) ?? null;
 }

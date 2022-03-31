@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheBillboard.API.Domain;
 
-[Table("Authors")]
+[Table("Author")]
 public record Author
 (
     [Required]
@@ -11,7 +11,7 @@ public record Author
     [Required]
     string Surname,
     [Required]
-    string Email,
+    string Mail,
     [Required]
     DateTime CreatedAt,
     [Required]

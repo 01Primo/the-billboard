@@ -18,8 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IMessageRepository, MessageRepository>();
-builder.Services.AddSingleton<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddDbContext<BillboardDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")));
 

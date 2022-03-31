@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheBillboard.API.Domain;
 
-[Table("Messages")]
+[Table("Message")]
 public record Message
 (
     [Required]

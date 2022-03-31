@@ -14,6 +14,6 @@ public class AuthoDto
 
     [Required]
 
-    public string Email { get; set; } = string.Empty;
+    public string Mail { get; set; } = string.Empty;
 
 }
