@@ -10,5 +10,6 @@ public record Author
     DateTime? UpdatedAt = null
 ) : BaseObject(Id, CreatedAt, UpdatedAt)
 {
+    public IReadOnlyCollection<Message> Messages { get; set; } = new HashSet<Message>();
     public override string ToString() => Name + " " + Surname;
 }
