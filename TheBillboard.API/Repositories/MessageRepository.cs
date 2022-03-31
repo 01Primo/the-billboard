@@ -23,7 +23,8 @@ public class MessageRepository : IMessageRepository
             .Join(_context.Author,
                   message => message.AuthorId,
                   author => author.Id,
-                  (message, author) => new { Message = message, Author = author });
+                  (message, author) => new { Message = message, Author = author })
+            .Select(messageAndAuthor => messageAndAuthor.Message);
 
         return messages;
     }
@@ -37,9 +38,10 @@ public class MessageRepository : IMessageRepository
                   message => message.AuthorId,
                   author => author.Id,
                   (message, author) => new { Message = message, Author = author })
-            .Where(messageAndAuthor => messageAndAuthor.Message.AuthorId == id);
+            .Where(messageAndAuthor => messageAndAuthor.Message.AuthorId == id)
+            .Select(messageAndAuthor => messageAndAuthor.Message);
 
-        return messages;
+        return (Message?)messages;
     }
 
     public MessageDto Create(MessageDto message)
