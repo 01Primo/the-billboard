@@ -1,21 +1,24 @@
-﻿namespace TheBillboard.API.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace TheBillboard.API.Domain;
+
+[Table("Authors")]
 public record Author
 (
-    string Name = "",
-    string Surname = "",
-    int? Id = default,
-    string? Email = "",
-    DateTime? CreatedAt = null,
-    DateTime? UpdatedAt = null
+    [Required]
+    string Name,
+    [Required]
+    string Surname,
+    [Required]
+    string Email,
+    [Required]
+    DateTime CreatedAt,
+    [Required]
+    DateTime UpdatedAt
 )
 {
-    public Author(int id, string name, string surname, string? mail, DateTime? createdAt) : this(name, surname, id, mail, createdAt)
-    {
-    }
-
-    public override string ToString()
-    {
-        return Name + " " + Surname;
-    }
+    [Key]
+    public int? Id { get; set; }
+    public virtual IReadOnlyCollection<Message> Messages { get; set; } = null!;
 }
