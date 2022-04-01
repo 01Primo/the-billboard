@@ -1,31 +1,63 @@
-﻿using TheBillboard.API.Abstract;
-using TheBillboard.API.Domain;
+﻿namespace TheBillboard.API.Repositories;
 
-namespace TheBillboard.API.Repositories;
+using Abstract;
+using Data;
+using Domain;
+using Dtos;
+using Microsoft.EntityFrameworkCore;
 
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly IReader _reader;
+    private readonly BillboardDbContext _context;
 
-    public AuthorRepository(IReader reader)
+    public AuthorRepository(BillboardDbContext context)
     {
-        _reader = reader;
+        _context = context;
     }
 
-    public Task<IEnumerable<Author>> GetAll()
+    public async Task<IEnumerable<AuthorDto>> GetAll()
     {
-        const string query = @"SELECT Id, Name, Surname, Mail, CreatedAt
-                               FROM Author";
-
-        return _reader.QueryAsync<Author>(query);
+        // var result = _context.Author.Select(author => new AuthorDto(author));
+        var result = _context.Author.Select(AuthorDto.Cast);
+        return result;
     }
 
-    public Task<Author?> GetById(int id)
+    public async Task<AuthorDto?> GetById(int id)
     {
-        var query = $@"SELECT Id, Name, Surname, Mail, CreatedAt
-                       FROM Author
-                       WHERE Id=@Id";
+        var author = await _context.Author.FindAsync(id);
+        return author is not null ? new AuthorDto(author) : null;
+    }
 
-        return _reader.GetByIdAsync<Author>(query, id);
+    public async Task<AuthorDto> Create(AuthorDto authorDto)
+    {
+        var newAuthor = new Author(authorDto)
+        {
+            Id = null
+        };
+
+        var result = await _context.AddAsync(newAuthor);
+        await _context.SaveChangesAsync();
+
+        return new AuthorDto(result.Entity);
+    }
+
+    public async Task<AuthorDto> Update(AuthorDto authorDto)
+    {
+        var newAuthor = new Author(authorDto);
+
+        var result = _context.Update(newAuthor);
+        await _context.SaveChangesAsync();
+
+        return new AuthorDto(result.Entity);
+    }
+
+    public async Task Delete(int id)
+    {
+        var author = new Author(string.Empty, string.Empty, string.Empty, default, default)
+        {
+            Id = id
+        };
+        _context.Author.Remove(author);
+        await _context.SaveChangesAsync();
     }
 }

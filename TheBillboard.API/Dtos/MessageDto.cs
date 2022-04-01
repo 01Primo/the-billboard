@@ -1,17 +1,23 @@
 ﻿namespace TheBillboard.API.Dtos;
 
+using Domain;
 using System.ComponentModel.DataAnnotations;
 
-public class MessageDto
-{
+public record MessageDto
+    (
     [Required, StringLength(10)]
-    public string Title { get; init; } = string.Empty;
-    
+    string Title,
     [Required]
-    public string Body { get; init; } = string.Empty;
-    
+    string Body,
     [Required]
-    public int AuthorId { get; init; }
-    
-    public int? Id { get; init; }
+    int AuthorId,
+    int? Id
+    )
+{
+    public MessageDto() : this(string.Empty, string.Empty, 0, null)
+    { }
+
+    public MessageDto(Message message)
+        : this(message.Title, message.Body, message.AuthorId, message.Id)
+    { }
 }
