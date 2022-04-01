@@ -1,20 +1,22 @@
 ﻿namespace TheBillboard.API.Controllers;
 
 using Abstract;
-using Bogus;
-using Domain;
 using Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 
 [ApiController]
 [Route("[controller]")]
 public class MessageController : ControllerBase
 {
+    private readonly ILogger<MessageController> _logger;
     private readonly IMessageRepository _messageRepository;
 
-    public MessageController(IMessageRepository messageRepository)
+    public MessageController(ILogger<MessageController> logger, IMessageRepository messageRepository)
     {
+        _logger = logger;
         _messageRepository = messageRepository;
     }
 
@@ -37,7 +39,8 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error getting message by id");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -54,13 +57,18 @@ public class MessageController : ControllerBase
             var created = await _messageRepository.Create(message);
             var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-            return created is not null 
+            return created is not null
                    ? Created($"{url}/{created.Id}", created)
                    : BadRequest();
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            if (e.InnerException is SqlException { Number: 547 })
+            {
+                return BadRequest(new { Error = "Cannot create message with non existing author" });
+            }
+            _logger.LogError(e, "Error creating message");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -77,7 +85,8 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error deleting message");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -94,7 +103,8 @@ public class MessageController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error updating message");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 }

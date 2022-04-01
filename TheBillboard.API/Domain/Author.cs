@@ -10,12 +10,6 @@ public record Author
     DateTime? UpdatedAt = null
 ) : EntityBase(Id, CreatedAt, UpdatedAt)
 {
-    public Author(int? id, string name, string surname, string? mail, DateTime? createdAt, DateTime? updatedAt) : this(name, surname, id, mail, createdAt, updatedAt)
-    {
-    }
-
-    public override string ToString()
-    {
-        return Name + " " + Surname;
-    }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public ICollection<Message> Messages { get; set; } = null!;
 }

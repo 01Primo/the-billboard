@@ -8,11 +8,13 @@ namespace TheBillboard.API.Controllers;
 [Route("[controller]")]
 public class AuthorController : ControllerBase
 {
+    private readonly ILogger<AuthorController> _logger;
     private readonly IAuthorRepository _authorRepository;
 
-    public AuthorController(IAuthorRepository authorRepository)
+    public AuthorController(IAuthorRepository authorRepository, ILogger<AuthorController> logger)
     {
         _authorRepository = authorRepository;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -34,7 +36,8 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error while getting author by id");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -57,7 +60,8 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error while creating author");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -74,7 +78,8 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error while deleting author");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -91,7 +96,8 @@ public class AuthorController : ControllerBase
         }
         catch (Exception e)
         {
-            return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            _logger.LogError(e, "Error while updating author");
+            return Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
     }
 }
