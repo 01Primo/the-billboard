@@ -4,6 +4,7 @@ using Abstract;
 using Domain;
 using Dtos;
 using TheBillboard.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class MessageRepository : IMessageRepository
 {
@@ -14,46 +15,46 @@ public class MessageRepository : IMessageRepository
     {
         _context = context;
     }
-    
-        //TODO: assess whether Author is needed, if yes add it to "message" before returning
-    public async Task<IEnumerable<Message>> GetAll()
-    {
-        var messages = _context
-            .Message
-            .Join(_context.Author,
-                  message => message.AuthorId,
-                  author => author.Id,
-                  (message, author) => new { Message = message, Author = author })
-            .Select(messageAndAuthor => messageAndAuthor.Message)
-            .AsEnumerable();
 
-        return messages;
+    public async Task<IEnumerable<MessageDto>> GetAll()
+    {
+        var result = _context.Message.Select(msg => new MessageDto(msg));
+        return await result.ToListAsync();
     }
 
-    //TODO: assess whether Author is needed, if yes add it to "message" before returning
-    public async Task<Message?> GetById(int id)
+    public async Task<MessageDto?> GetById(int id)
     {
-        var message = _context.Message.Find(id);
-        return message ?? null;
+        var message = await _context.Message.FindAsync(id);
+        return message is not null ? new MessageDto(message) : null;
     }
 
-    //TODO: currently automatically assigns Id on DB, probably need to retrieve it and set it as Id of returned MessageDto
-    public MessageDto Create(MessageDto message)
+    public async Task<MessageDto> Create(MessageDto msgDto)
     {
-        var newMessage = new Message(message.Title, message.Body, DateTime.Now, DateTime.Now)
-        {
-            AuthorId = message.AuthorId
-        };
+        var newMessage = new Message(msgDto);
+        newMessage.Id = null;
 
-        _context.Add(newMessage);
-        _context.SaveChanges();
+        var result = await _context.AddAsync(newMessage);
+        await _context.SaveChangesAsync();
 
-        return new MessageDto()
-        {
-            Title = message.Title,
-            Body = message.Body,
-            AuthorId = message.AuthorId,
-            Id = message.Id
-        };
+        return new MessageDto(result.Entity);
+    }
+
+    public async Task<MessageDto> Update(MessageDto msgDto)
+    {
+        var newMessage = new Message(msgDto);
+
+        var result = _context.Update(newMessage);
+        await _context.SaveChangesAsync();
+
+        return new MessageDto(result.Entity);
+    }
+
+    public async Task Delete(int id)
+    {
+        //var newMessage = new Message();
+        //await _context.Message.Remove(newMessage);
+        //await _context.SaveChangesAsync();
+
+        return;
     }
 }

@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace TheBillboard.API.Domain;
 
-namespace TheBillboard.API.Domain;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Dtos;
 
 [Table("Author")]
 public record Author
@@ -21,4 +22,9 @@ public record Author
     [Key]
     public int? Id { get; set; }
     public virtual IReadOnlyCollection<Message> Messages { get; set; } = null!;
+
+    public Author(AuthorDto authorDto) : this(authorDto.Name, authorDto.Surname, authorDto.Mail, DateTime.Now, DateTime.Now)
+    {
+        Id = authorDto.Id;
+    }
 }

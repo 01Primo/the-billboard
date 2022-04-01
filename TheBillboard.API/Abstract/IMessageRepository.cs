@@ -1,11 +1,12 @@
 ﻿namespace TheBillboard.API.Abstract;
 
-using Domain;
 using Dtos;
 
 public interface IMessageRepository
 {
-    Task<IEnumerable<Message>> GetAll();
-    Task<Message?> GetById(int id);
-    MessageDto Create(MessageDto message);
+    Task<IEnumerable<MessageDto>> GetAll();
+    Task<MessageDto?> GetById(int id);
+    Task<MessageDto> Create(MessageDto message);
+    Task<MessageDto> Update(MessageDto msgDto);
+    Task Delete(int id);
 }

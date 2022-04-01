@@ -1,19 +1,23 @@
 namespace TheBillboard.API.Dtos;
+
+using Domain;
 using System.ComponentModel.DataAnnotations;
 
-public class AuthoDto
-{
-
+public record AuthorDto
+    (
     [Required, StringLength(10)]
-
-    public string Name { get; set; } = string.Empty;
-
+    string Name,
     [Required]
-
-    public string Surname { get; set; } = string.Empty;
-
+    string Surname,
     [Required]
+    string Mail,
+    int? Id
+    )
+{
+    public AuthorDto() : this(string.Empty, string.Empty, string.Empty, null)
+    { }
 
-    public string Mail { get; set; } = string.Empty;
-
+    public AuthorDto(Author author)
+        : this(author.Name, author.Surname, author.Mail, author.Id)
+    { }
 }
