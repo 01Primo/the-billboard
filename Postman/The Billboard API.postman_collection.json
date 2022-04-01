@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7e0283a9-91fc-4378-9819-5fb9049a8a66",
+		"_postman_id": "4874c35c-c4d8-4430-aa21-2c5890e090f8",
 		"name": "The Billboard API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,110 +10,19 @@
 			"item": [
 				{
 					"name": "GetById",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaMessage = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"object\",             \r",
-									"            \"required\": [\r",
-									"                \"id\",\r",
-									"                \"title\",\r",
-									"                \"body\",\r",
-									"                \"authorId\",\r",
-									"                \"createdAt\",\r",
-									"                \"updatedAt\",\r",
-									"            ],\r",
-									"            \"properties\": {\r",
-									"                \"id\" : {\r",
-									"                    \"type\": \"integer\"\r",
-									"                },\r",
-									"                \"title\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"body\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"authorId\": {\r",
-									"                    \"type\": \"integer\"\r",
-									"                },\r",
-									"                 \"createdAt\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"updatedAt\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                \"author\": {\r",
-									"                    \"type\": \"object\",\r",
-									"                    \"required\": [\r",
-									"                                    \"id\",\r",
-									"                                    \"name\",\r",
-									"                                    \"surname\",\r",
-									"                                    \"mail\",\r",
-									"                                    \"createdAt\",\r",
-									"                                    \"updatedAt\"\r",
-									"                                ],\r",
-									"                                \"properties\": {\r",
-									"                                    \"id\": {\r",
-									"                                        \"type\": \"integer\"\r",
-									"                                    },\r",
-									"                                    \"name\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"surname\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"mail\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"createdAt\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"updatedAt\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    }\r",
-									"                                }\r",
-									"                            }\r",
-									"            }\r",
-									"}  \r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaMessage);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.environment.set('MessageID', 1)\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/Message/{{MessageID}}",
+							"raw": "https://localhost:7159/Message/1",
+							"protocol": "https",
 							"host": [
-								"{{BaseURL}}"
+								"localhost"
 							],
+							"port": "7159",
 							"path": [
 								"Message",
-								"{{MessageID}}"
+								"1"
 							]
 						}
 					},
@@ -128,7 +37,7 @@
 								"exec": [
 									"const response = pm.response;\r",
 									"const responseData = response.json();\r",
-									"const SchemaMessageArray = {\r",
+									"const expectedSchema = {\r",
 									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
 									"    \"type\": \"array\",\r",
 									"            \"additionalItems\": false,\r",
@@ -140,34 +49,23 @@
 									"                    \"body\",\r",
 									"                    \"authorId\",\r",
 									"                    \"createdAt\",\r",
-									"                    \"updatedAt\",                    \r",
-									"                ],\r",
-									"                \"properties\": {\r",
-									"                    \"id\" : {\r",
-									"                        \"type\": \"integer\"\r",
-									"                    },\r",
-									"                    \"title\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"body\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"authorId\": {\r",
+									"                    \"updatedAt\",\r",
+									"                ]\r",
+									"            },\r",
+									"            \"properties\": {\r",
+									"                \"id\" : {\r",
 									"                    \"type\": \"integer\"\r",
 									"                },\r",
-									"                 \"createdAt\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"updatedAt\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
+									"                \"title\": {\r",
+									"                    \"type\": \"integer\"\r",
+									"                }, \r",
 									"                \"author\": {\r",
 									"                    \"type\": \"object\",\r",
 									"                    \"required\": [\r",
 									"                                    \"id\",\r",
-									"                                    \"name\",\r",
 									"                                    \"surname\",\r",
-									"                                    \"mail\",\r",
+									"                                    \"name\",\r",
+									"                                    \"email\",\r",
 									"                                    \"createdAt\",\r",
 									"                                    \"updatedAt\"\r",
 									"                                ],\r",
@@ -175,34 +73,21 @@
 									"                                    \"id\": {\r",
 									"                                        \"type\": \"integer\"\r",
 									"                                    },\r",
-									"                                    \"name\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
 									"                                    \"surname\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"mail\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"createdAt\": {\r",
-									"                                        \"type\": \"string\"\r",
-									"                                    },\r",
-									"                                    \"updatedAt\": {\r",
-									"                                        \"type\": \"string\"\r",
+									"                                        \"type\": \"integer\"\r",
 									"                                    }\r",
+									"                                }\r",
 									"                            }\r",
-									"                    }\r",
-									"                \r",
-									"                }\r",
 									"            }\r",
-									"}        \r",
+									"}  \r",
+									"            \r",
 									"\r",
 									"pm.test(\"Basic OK\", function(){\r",
 									"    response.to.have.status(200);\r",
 									"});\r",
 									"\r",
 									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaMessageArray);\r",
+									"  pm.response.to.have.jsonSchema(expectedSchema);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -213,10 +98,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/Message",
+							"raw": "https://localhost:7159/Message",
+							"protocol": "https",
 							"host": [
-								"{{BaseURL}}"
+								"localhost"
 							],
+							"port": "7159",
 							"path": [
 								"Message"
 							]
@@ -226,51 +113,6 @@
 				},
 				{
 					"name": "Create",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaMessageDto = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"object\",             \r",
-									"            \"required\": [\r",
-									"                \"id\",\r",
-									"                \"title\",\r",
-									"                \"body\",\r",
-									"                \"authorId\"                \r",
-									"            ],\r",
-									"            \"properties\": {\r",
-									"                \"id\" : {\r",
-									"                    \"type\": \"integer\"\r",
-									"                },\r",
-									"                \"title\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"body\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"authorId\": {\r",
-									"                    \"type\": \"integer\"\r",
-									"                }\r",
-									"                \r",
-									"            }\r",
-									"}  \r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(201);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaMessageDto);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -285,10 +127,12 @@
 							"raw": "{\r\n    \"title\": \"Hello\",\r\n    \"body\": \"Hello World!\",\r\n    \"authorId\": 1\r\n}"
 						},
 						"url": {
-							"raw": "{{BaseURL}}/Message",
+							"raw": "https://localhost:7159/Message",
+							"protocol": "https",
 							"host": [
-								"{{BaseURL}}"
+								"localhost"
 							],
+							"port": "7159",
 							"path": [
 								"Message"
 							]
@@ -344,16 +188,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const response = pm.response;\r",
-									"const SchemaDelete = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"boolean\"\r",
-									"    }       \r",
 									"pm.test(\"Basic OK\", function(){\r",
 									"    response.to.have.status(200);\r",
-									"});\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaDelete);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -382,78 +218,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Update",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaMessageDto = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"object\",             \r",
-									"            \"required\": [\r",
-									"                \"id\",\r",
-									"                \"title\",\r",
-									"                \"body\",\r",
-									"                \"authorId\"                \r",
-									"            ],\r",
-									"            \"properties\": {\r",
-									"                \"id\" : {\r",
-									"                    \"type\": \"integer\"\r",
-									"                },\r",
-									"                \"title\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"body\": {\r",
-									"                    \"type\": \"string\"\r",
-									"                },\r",
-									"                 \"authorId\": {\r",
-									"                    \"type\": \"integer\"\r",
-									"                }\r",
-									"                \r",
-									"            }\r",
-									"}  \r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaMessageDto);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Hello2\",\r\n    \"body\": \"Hello World! (Edited)\",\r\n    \"authorId\": 1,\r\n    \"id\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{BaseURL}}/Message/",
-							"host": [
-								"{{BaseURL}}"
-							],
-							"path": [
-								"Message",
-								""
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -462,78 +226,19 @@
 			"item": [
 				{
 					"name": "GetById",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaAuthor = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"object\",        \r",
-									"            \"required\": [\r",
-									"                \"id\",\r",
-									"                \"name\",\r",
-									"                \"surname\",\r",
-									"                \"mail\",\r",
-									"                \"createdAt\",\r",
-									"                \"updatedAt\"\r",
-									"                ],\r",
-									"                \"properties\": {\r",
-									"                    \"id\": {\r",
-									"                        \"type\": \"integer\"\r",
-									"                    },\r",
-									"                    \"name\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"surname\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"mail\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"createdAt\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"updatedAt\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    }\r",
-									"                }\r",
-									"}\r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaAuthor);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.environment.set('AuthorID', 1)"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/Author/{{AuthorID}}",
+							"raw": "https://localhost:7159/Author/1",
+							"protocol": "https",
 							"host": [
-								"{{BaseURL}}"
+								"localhost"
 							],
+							"port": "7159",
 							"path": [
 								"Author",
-								"{{AuthorID}}"
+								"1"
 							]
 						}
 					},
@@ -541,288 +246,18 @@
 				},
 				{
 					"name": "GetAll",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaAuthorDto = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"array\",\r",
-									"            \"additionalItems\": false,\r",
-									"            \"items\": { \r",
-									"                type: \"object\",       \r",
-									"                \"required\": [\r",
-									"                    \"id\",\r",
-									"                    \"name\",\r",
-									"                    \"surname\",\r",
-									"                    \"mail\"\r",
-									"                    ],\r",
-									"                    \"properties\": {\r",
-									"                        \"id\": {\r",
-									"                            \"type\": \"integer\"\r",
-									"                        },\r",
-									"                        \"name\": {\r",
-									"                            \"type\": \"string\"\r",
-									"                        },\r",
-									"                        \"surname\": {\r",
-									"                            \"type\": \"string\"\r",
-									"                        },\r",
-									"                        \"mail\": {\r",
-									"                            \"type\": \"string\"\r",
-									"                        }\r",
-									"                    }\r",
-									"            }\r",
-									"}\r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaAuthorDto);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/Author/",
+							"raw": "https://localhost:7159/Author",
+							"protocol": "https",
 							"host": [
-								"{{BaseURL}}"
+								"localhost"
 							],
+							"port": "7159",
 							"path": [
-								"Author",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaAuthorDto = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"object\",        \r",
-									"            \"required\": [\r",
-									"                \"id\",\r",
-									"                \"name\",\r",
-									"                \"surname\",\r",
-									"                \"mail\"\r",
-									"                ],\r",
-									"                \"properties\": {\r",
-									"                    \"id\": {\r",
-									"                        \"type\": \"integer\"\r",
-									"                    },\r",
-									"                    \"name\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"surname\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"mail\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    }\r",
-									"                }\r",
-									"}\r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaAuthorDto);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"A Name\",\r\n    \"surname\": \"A surname\",\r\n    \"mail\": \"ciao@mail.com\"    \r\n}"
-						},
-						"url": {
-							"raw": "{{BaseURL}}/Author/",
-							"host": [
-								"{{BaseURL}}"
-							],
-							"path": [
-								"Author",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"const author = \r",
-									"{\r",
-									"    \"name\": \"A name\",\r",
-									"    \"surname\": \"A surname\",\r",
-									"    \"mail\": \"mail\"    \r",
-									"};\r",
-									"\r",
-									"const callOptions = {\r",
-									"    url: pm.environment.get('BaseURL') + '/Author',\r",
-									"    method: 'POST',\r",
-									"    header: {\r",
-									"        'Content-Type': 'application/json'\r",
-									"    },\r",
-									"body: {\r",
-									"        mode: 'raw',\r",
-									"        raw: JSON.stringify(author)\r",
-									"    }\r",
-									"}\r",
-									"\r",
-									"pm.sendRequest(callOptions, function (err, response) {\r",
-									"    \r",
-									"    console.log(response)\r",
-									"\r",
-									"    if(err != null){\r",
-									"        console.log(\"An error occured retrieving Jakala Old SSO Token. Error: \" + err.json)\r",
-									"        return;\r",
-									"    }\r",
-									"    \r",
-									"    const jsonResponse=response.json();\r",
-									"    console.log(\"Response JSON: \"+ JSON.stringify(jsonResponse));\r",
-									"\r",
-									"    pm.environment.set('AuthorID', jsonResponse.id)\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const SchemaDelete = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"boolean\"\r",
-									"    }       \r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaDelete);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{BaseURL}}/Author/{{AuthorID}}",
-							"host": [
-								"{{BaseURL}}"
-							],
-							"path": [
-								"Author",
-								"{{AuthorID}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const response = pm.response;\r",
-									"const responseData = response.json();\r",
-									"const SchemaAuthorDto = {\r",
-									"    \"$schema\": \"http://json-schema.org/draft-07/schema\",\r",
-									"    \"type\": \"object\",        \r",
-									"            \"required\": [\r",
-									"                \"id\",\r",
-									"                \"name\",\r",
-									"                \"surname\",\r",
-									"                \"mail\"\r",
-									"                ],\r",
-									"                \"properties\": {\r",
-									"                    \"id\": {\r",
-									"                        \"type\": \"integer\"\r",
-									"                    },\r",
-									"                    \"name\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"surname\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    },\r",
-									"                    \"mail\": {\r",
-									"                        \"type\": \"string\"\r",
-									"                    }\r",
-									"                }\r",
-									"}\r",
-									"\r",
-									"pm.test(\"Basic OK\", function(){\r",
-									"    response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test('Schema is valid', function() {\r",
-									"  pm.response.to.have.jsonSchema(SchemaAuthorDto);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Name (Edited)\",\r\n    \"surname\": \"Surname (Edited)\",\r\n    \"mail\": \"mail@mail.com\",\r\n    \"id\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{BaseURL}}/Author/",
-							"host": [
-								"{{BaseURL}}"
-							],
-							"path": [
-								"Author",
-								""
+								"Author"
 							]
 						}
 					},
