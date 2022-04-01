@@ -84,10 +84,7 @@ public class MessageRepository : IMessageRepository
     public async Task<MessageDto> Update(MessageDto message)
     {
         var  newMessage = new  Message(message.Id, message.Title, message.Body, message.AuthorId, UpdatedAt: DateTime.Now);
-        _context.Entry(newMessage).Property(m => m.Title).IsModified = true;
-        _context.Entry(newMessage).Property(m => m.Body).IsModified = true;
-        _context.Entry(newMessage).Property(m => m.AuthorId).IsModified = true;
-        _context.Entry(newMessage).Property(m => m.UpdatedAt).IsModified = true;
+        _context.Update(newMessage);
         await _context.SaveChangesAsync();
 
         return new MessageDto()

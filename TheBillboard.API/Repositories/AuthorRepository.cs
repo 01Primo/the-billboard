@@ -65,10 +65,7 @@ public class AuthorRepository : IAuthorRepository
     public async Task<AuthorDto> Update(AuthorDto author)
     {
         var newAuthor = new Author(author.Id, author.Name, author.Surname, author.Mail, UpdatedAt: DateTime.Now);
-        _context.Entry(newAuthor).Property(p => p.Name).IsModified = true;
-        _context.Entry(newAuthor).Property(p => p.Surname).IsModified = true;
-        _context.Entry(newAuthor).Property(p => p.Mail).IsModified = true;
-        _context.Entry(newAuthor).Property(p => p.UpdatedAt).IsModified = true;
+        _context.Update(newAuthor);
         await _context.SaveChangesAsync();                
         return new AuthorDto()
         {

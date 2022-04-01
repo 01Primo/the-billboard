@@ -1,6 +1,7 @@
 ﻿namespace TheBillboard.API.Data;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Domain;
 
 public class TheBillboardDbContext : DbContext
@@ -20,6 +21,7 @@ public class TheBillboardDbContext : DbContext
         author.Property(a => a.Surname).HasMaxLength(50).IsRequired();
         author.Property(a => a.Mail).HasMaxLength(50).IsRequired();
         author.Property(a => a.CreatedAt).IsRequired();
+        author.Property(a => a.CreatedAt).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         author.Property(a => a.UpdatedAt).IsRequired();
 
         var message = modelBuilder.Entity<Message>();
@@ -28,6 +30,7 @@ public class TheBillboardDbContext : DbContext
         message.Property(m => m.Body).HasMaxLength(256).IsRequired();
         message.Property(m => m.AuthorId).IsRequired();
         message.Property(m => m.CreatedAt).IsRequired();
+        message.Property(m => m.CreatedAt).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         message.Property(m => m.UpdatedAt).IsRequired();
 
         message
