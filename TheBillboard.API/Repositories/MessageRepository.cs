@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace TheBillboard.API.Repositories;
+﻿namespace TheBillboard.API.Repositories;
 
 using Abstract;
 using Domain;
@@ -8,6 +6,7 @@ using Dtos;
 using Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 
 public class MessageRepository : IMessageRepository

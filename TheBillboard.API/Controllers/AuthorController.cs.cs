@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TheBillboard.API.Abstract;
-using TheBillboard.API.Dtos;
+﻿namespace TheBillboard.API.Controllers;
 
-namespace TheBillboard.API.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Abstract;
+using Dtos;
 
 [ApiController]
 [Route("[controller]")]

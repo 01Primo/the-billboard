@@ -1,9 +1,9 @@
 ﻿namespace TheBillboard.API.Repositories;
 
-using TheBillboard.API.Abstract;
-using TheBillboard.API.Data;
-using TheBillboard.API.Domain;
-using TheBillboard.API.Dtos;
+using Abstract;
+using Data;
+using Domain;
+using Dtos;
 using Microsoft.EntityFrameworkCore;
 
 public class AuthorRepository : IAuthorRepository
@@ -69,7 +69,7 @@ public class AuthorRepository : IAuthorRepository
         _context.Entry(newAuthor).Property(p => p.Surname).IsModified = true;
         _context.Entry(newAuthor).Property(p => p.Mail).IsModified = true;
         _context.Entry(newAuthor).Property(p => p.UpdatedAt).IsModified = true;
-        await _context.SaveChangesAsync();        
+        await _context.SaveChangesAsync();                
         return new AuthorDto()
         {
             Name = newAuthor.Name,

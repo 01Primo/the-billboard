@@ -1,7 +1,6 @@
-﻿using TheBillboard.API.Domain;
-using TheBillboard.API.Dtos;
+﻿namespace TheBillboard.API.Abstract;
 
-namespace TheBillboard.API.Abstract;
+using Dtos;
 
 public interface IAuthorRepository
 {

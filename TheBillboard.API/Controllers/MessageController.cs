@@ -1,8 +1,6 @@
 ﻿namespace TheBillboard.API.Controllers;
 
 using Abstract;
-using Bogus;
-using Domain;
 using Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

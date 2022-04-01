@@ -1,7 +1,5 @@
 ﻿namespace TheBillboard.API.Domain;
 
-using System.ComponentModel.DataAnnotations;
-
 public record Message(
     int? Id = default,
     string Title = "",
