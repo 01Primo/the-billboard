@@ -1,31 +1,86 @@
-﻿using TheBillboard.API.Abstract;
-using TheBillboard.API.Domain;
+﻿namespace TheBillboard.API.Repositories;
 
-namespace TheBillboard.API.Repositories;
+using Abstract;
+using Data;
+using Domain;
+using Dtos;
+using Microsoft.EntityFrameworkCore;
 
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly IReader _reader;
+    private readonly TheBillboardDbContext _context;
 
-    public AuthorRepository(IReader reader)
+    public AuthorRepository(TheBillboardDbContext context)
     {
-        _reader = reader;
+        _context = context;
     }
 
-    public Task<IEnumerable<Author>> GetAll()
+    public async Task<IEnumerable<AuthorDtoWithDate>> GetAll()
     {
-        const string query = @"SELECT Id, Name, Surname, Mail, CreatedAt
-                               FROM Author";
-
-        return _reader.QueryAsync<Author>(query);
+        var authors = await _context.Author.ToListAsync();
+        var result = authors.Select(
+            author => new AuthorDtoWithDate()
+            {
+                Name = author.Name,
+                Surname = author.Surname,
+                Mail = author.Mail,
+                Id = author.Id,
+                CreatedAt = (DateTime)author.CreatedAt!,
+                UpdatedAt = (DateTime)author.UpdatedAt!
+            });
+        return result;
     }
 
-    public Task<Author?> GetById(int id)
+    public async Task<AuthorDtoWithDate?> GetById(int id)
     {
-        var query = $@"SELECT Id, Name, Surname, Mail, CreatedAt
-                       FROM Author
-                       WHERE Id=@Id";
+        var newAuthor = await _context.Author.SingleOrDefaultAsync(a => a.Id == id);
+        if (newAuthor is null) return null;
+        return new AuthorDtoWithDate()
+        {
+            Name = newAuthor.Name,
+            Surname = newAuthor.Surname,
+            Mail = newAuthor.Mail,
+            Id = newAuthor.Id,
+            CreatedAt = (DateTime)newAuthor.CreatedAt!,
+            UpdatedAt = (DateTime)newAuthor.UpdatedAt!
+        };
+    }
 
-        return _reader.GetByIdAsync<Author>(query, id);
+    public async Task<AuthorDto> Create(AuthorDto author)
+    {
+        var newAuthor = new Author(default, author.Name, author.Surname, author.Mail, DateTime.Now, DateTime.Now);
+        var dbEntry = await _context.AddAsync(newAuthor);
+
+        await _context.SaveChangesAsync();
+
+        return new AuthorDto()
+        {
+            Name = newAuthor.Name,
+            Surname = newAuthor.Surname,
+            Mail = newAuthor.Mail,
+            Id = dbEntry.Entity.Id
+        };
+    }
+
+    public async Task<AuthorDto> Update(AuthorDto author)
+    {
+        var newAuthor = new Author(author.Id, author.Name, author.Surname, author.Mail, UpdatedAt: DateTime.Now);
+        _context.Update(newAuthor);
+        await _context.SaveChangesAsync();                
+        return new AuthorDto()
+        {
+            Name = newAuthor.Name,
+            Surname = newAuthor.Surname,
+            Id = newAuthor.Id,
+            Mail = newAuthor.Mail
+        };
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var newAuthor = new Author(id);
+        _context.Author.Remove(newAuthor);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

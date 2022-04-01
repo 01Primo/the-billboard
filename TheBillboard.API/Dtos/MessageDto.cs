@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 public class MessageDto
 {
-    [Required, StringLength(10)]
+    [Required, StringLength(50)]
     public string Title { get; init; } = string.Empty;
     
-    [Required]
+    [Required, StringLength(256)]
     public string Body { get; init; } = string.Empty;
     
     [Required]

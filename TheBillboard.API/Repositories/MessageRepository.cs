@@ -3,107 +3,104 @@
 using Abstract;
 using Domain;
 using Dtos;
+using Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 public class MessageRepository : IMessageRepository
 {
-    private readonly List<Message> _messages = new()
+    private readonly TheBillboardDbContext _context;
+
+    public MessageRepository(TheBillboardDbContext context)
     {
-        new()
+        _context = context;
+    }
+    public async Task<IEnumerable<MessageDtoWithDateAndAuthor>> GetAll()
+    {
+        var messages = await _context.Message.Include(a => a.Author).ToListAsync();
+        var result = messages.Select(message =>
+        new MessageDtoWithDateAndAuthor()
         {
-            Author = new Author()
+            Title = message.Title,
+            Body = message.Body,
+            AuthorId = message.AuthorId,
+            Id = message.Id,
+            CreatedAt = message.CreatedAt,
+            UpdatedAt = message.UpdatedAt,
+            Author = new()
             {
-                Id = 1,
-                Name = "John",
-                Surname = "Doe",
-                Email = "john.dow.mail.com",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            },
-            Id = 1,
-            Title = "Hello",
-            Body = "Hello World!",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AuthorId = 1
-        },
-        new()
-        {
-            Author = new Author()
-            {
-                Id = 2,
-                Name = "Jane",
-                Surname = "Doe",
-                Email = "jane.doe.mail.com",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            },
-            Id = 2,
-            Title = "Hi",
-            Body = "Hi World!",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AuthorId = 2
+                Id = message.AuthorId,
+                Name = message.Author.Name,
+                Surname = message.Author.Surname,
+                Mail = message.Author.Mail,
+                CreatedAt = message.Author.CreatedAt,
+                UpdatedAt = message.Author.UpdatedAt
+            }
         }
-    };
-    
-    private readonly IReader _reader;
-    
-    public MessageRepository(IReader reader)
-    {
-        _reader = reader;
-    }
-    public Task<IEnumerable<Message>> GetAll()
-    {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " +
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId";
-
-        return _reader.QueryAsync<Message>(query);
+        );
+        return result;
     }
 
-    public async Task<Message?> GetById(int id)
+    public async Task<MessageDtoWithDateAndAuthor?> GetById(int id)
     {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " + 
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
-                                " " +
-                                "WHERE M.Id=@Id";
-
-        return await _reader.GetByIdAsync<Message>(query, id);
+        var newMessage = await _context.Message.Include(a => a.Author).SingleOrDefaultAsync(m => m.Id == id);
+        return new MessageDtoWithDateAndAuthor()
+        {
+            Title = newMessage.Title,
+            Body = newMessage.Body,
+            AuthorId = newMessage.AuthorId,
+            Id = id,
+            CreatedAt = newMessage.CreatedAt,
+            UpdatedAt = newMessage.UpdatedAt,
+            Author = new()
+            {
+                Id = newMessage.AuthorId,
+                Name = newMessage.Author.Name,
+                Surname = newMessage.Author.Surname,
+                Mail = newMessage.Author.Mail,
+                CreatedAt = newMessage.Author.CreatedAt,
+                UpdatedAt = newMessage.Author.UpdatedAt
+            }
+        };
     }
 
-    public MessageDto Create(MessageDto message)
+    public async Task<MessageDto> Create(MessageDto message)
     {
-        var lastId = _messages.Max(m => m.Id);
-        var newId = (lastId ?? 0) + 1;
-        
-        var newMessage = new Message(newId, message.Title, message.Body, message.AuthorId, DateTime.Now, default);
-        _messages.Add(newMessage);
-        
+        var newMessage = new Message(default, message.Title, message.Body, message.AuthorId, DateTime.Now, DateTime.Now);
+        var dbEntry = await _context.AddAsync(newMessage);
+
+        await _context.SaveChangesAsync();
+
         return new MessageDto()
         {
             Title = newMessage.Title,
             Body = newMessage.Body,
             AuthorId = newMessage.AuthorId,
-            Id = newId
+            Id = dbEntry.Entity.Id
         };
+    }
+    public async Task<MessageDto> Update(MessageDto message)
+    {
+        var  newMessage = new  Message(message.Id, message.Title, message.Body, message.AuthorId, UpdatedAt: DateTime.Now);
+        _context.Update(newMessage);
+        await _context.SaveChangesAsync();
+
+        return new MessageDto()
+        {
+            Title = newMessage.Title,
+            Body = newMessage.Body,
+            AuthorId = newMessage.AuthorId,
+            Id = message.Id,
+        };
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var newMessage = new Message(id);
+        _context.Message.Remove(newMessage);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

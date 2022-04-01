@@ -2,20 +2,14 @@
 
 public record Author
 (
+    int? Id = default,
     string Name = "",
     string Surname = "",
-    int? Id = default,
-    string? Email = "",
+    string? Mail = "",
     DateTime? CreatedAt = null,
     DateTime? UpdatedAt = null
-)
+) : BaseObject(Id, CreatedAt, UpdatedAt)
 {
-    public Author(int id, string name, string surname, string? mail, DateTime? createdAt) : this(name, surname, id, mail, createdAt)
-    {
-    }
-
-    public override string ToString()
-    {
-        return Name + " " + Surname;
-    }
+    public IReadOnlyCollection<Message> Messages { get; set; } = new HashSet<Message>();
+    public override string ToString() => Name + " " + Surname;
 }

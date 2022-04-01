@@ -1,8 +1,6 @@
 ﻿namespace TheBillboard.API.Controllers;
 
 using Abstract;
-using Bogus;
-using Domain;
 using Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -17,13 +15,13 @@ public class MessageController : ControllerBase
     {
         _messageRepository = messageRepository;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _messageRepository.GetAll());
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
@@ -33,16 +31,16 @@ public class MessageController : ControllerBase
 
             return message is not null
                 ? Ok(message)
-                : NotFound();    
+                : NotFound();
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpPost]
-    public IActionResult Create([FromBody] MessageDto message)
+    public async Task<IActionResult> Create([FromBody] MessageDto message)
     {
         if (!ModelState.IsValid)
         {
@@ -51,9 +49,47 @@ public class MessageController : ControllerBase
 
         try
         {
-            var created = _messageRepository.Create(message);
+            var created = await _messageRepository.Create(message);
+            
+            return Created($"{this.Request.Scheme}://{this.Request.Host}{this.Request.Path}/{created.Id}", created);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
-            return Ok(created);
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] MessageDto message)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var updated = await _messageRepository.Update(message);
+            return Ok(updated);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var success = await _messageRepository.Delete(id);
+            return success ? Ok() : Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
         catch (Exception e)
         {

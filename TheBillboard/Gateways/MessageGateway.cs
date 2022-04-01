@@ -81,12 +81,12 @@ public class MessageGateway : IMessageGateway
         return _writer.WriteAsync(query, parameters);
     }
 
-    public Task<bool> Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         const string query = @"DELETE FROM Message
                       WHERE (Id=@Id)";
 
-        return _writer.WriteAsync(query, new[] {("@Id", (object?) id)});
+        return await _writer.WriteAsync(query, new[] {("@Id", (object?) id)});
     }
 
     private static Message MapMessage(IDataReader dr)
