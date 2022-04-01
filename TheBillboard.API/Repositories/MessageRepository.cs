@@ -30,8 +30,10 @@ public class MessageRepository : IMessageRepository
 
     public async Task<MessageDto> Create(MessageDto msgDto)
     {
-        var newMessage = new Message(msgDto);
-        newMessage.Id = null;
+        var newMessage = new Message(msgDto)
+        {
+            Id = null
+        };
 
         var result = await _context.AddAsync(newMessage);
         await _context.SaveChangesAsync();
@@ -51,10 +53,8 @@ public class MessageRepository : IMessageRepository
 
     public async Task Delete(int id)
     {
-        //var newMessage = new Message();
-        //await _context.Message.Remove(newMessage);
-        //await _context.SaveChangesAsync();
-
-        return;
+        var message = await _context.Message.FindAsync(id);
+        if (message is not null) _context.Message.Remove(message);
+        await _context.SaveChangesAsync();
     }
 }

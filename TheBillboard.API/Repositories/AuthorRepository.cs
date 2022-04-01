@@ -29,8 +29,10 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task<AuthorDto> Create(AuthorDto authorDto)
     {
-        var newAuthor = new Author(authorDto);
-        newAuthor.Id = null;
+        var newAuthor = new Author(authorDto)
+        {
+            Id = null
+        };
 
         var result = await _context.AddAsync(newAuthor);
         await _context.SaveChangesAsync();
@@ -50,7 +52,8 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task Delete(int id)
     {
-        //TODO
-        return;
+        var author = await _context.Author.FindAsync(id);
+        if (author is not null) _context.Author.Remove(author);
+        await _context.SaveChangesAsync();
     }
 }
