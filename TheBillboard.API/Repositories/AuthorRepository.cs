@@ -52,8 +52,11 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task Delete(int id)
     {
-        var author = await _context.Author.FindAsync(id);
-        if (author is not null) _context.Author.Remove(author);
+        var author = new Author(string.Empty, string.Empty, string.Empty, default, default)
+        {
+            Id = id
+        };
+        _context.Author.Remove(author);
         await _context.SaveChangesAsync();
     }
 }

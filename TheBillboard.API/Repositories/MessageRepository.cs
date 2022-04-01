@@ -53,7 +53,10 @@ public class MessageRepository : IMessageRepository
 
     public async Task Delete(int id)
     {
-        var message = await _context.Message.FindAsync(id);
+        var message = new Message(string.Empty, string.Empty, default, default)
+        {
+            Id = id
+        };
         if (message is not null) _context.Message.Remove(message);
         await _context.SaveChangesAsync();
     }
