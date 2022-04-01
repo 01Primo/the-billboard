@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using TheBillboard.API.Domain;
 
 namespace TheBillboard.API.Data;
@@ -16,14 +17,21 @@ public class BillboardDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var messages = modelBuilder.Entity<Message>();
-        messages.Property(m => m.CreatedAt).IsRequired();
+        messages.Property(m => m.CreatedAt).IsRequired()
+            .ValueGeneratedOnAdd()
+            .HasDefaultValueSql("getdate()")
+            .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
         messages
             .HasOne(m => m.Author)
             .WithMany(a => a.Messages)
             .HasForeignKey(m => m.AuthorId);
 
         var authors = modelBuilder.Entity<Author>();
-        authors.Property(a => a.CreatedAt).IsRequired();
+        authors.Property(a => a.CreatedAt).IsRequired()
+            .ValueGeneratedOnAdd()
+            .HasDefaultValueSql("getdate()")
+            .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         authors.HasMany(a => a.Messages);
     }
 }

@@ -32,7 +32,6 @@ public class MessageRepository : IMessageRepository
             Title = message.Title,
             Body = message.Body,
             AuthorId = message.AuthorId,
-            CreatedAt = DateTime.Now
         };
 
         _context.Messages.Add(messageEntity);
@@ -58,11 +57,7 @@ public class MessageRepository : IMessageRepository
             AuthorId = message.AuthorId,
             UpdatedAt = DateTime.Now
         };
-        var attached = _context.Messages.Attach(messageEntity);
-        attached.Property(m => m.AuthorId).IsModified = true;
-        attached.Property(m => m.Title).IsModified = true;
-        attached.Property(m => m.Body).IsModified = true;
-        attached.Property(m => m.UpdatedAt).IsModified = true;
+        _context.Messages.Update(messageEntity);
         await _context.SaveChangesAsync();
 
         return message with { Id = id };

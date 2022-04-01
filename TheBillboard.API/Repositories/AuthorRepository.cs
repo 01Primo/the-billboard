@@ -32,8 +32,6 @@ public class AuthorRepository : IAuthorRepository
             Name = author.Name,
             Surname = author.Surname,
             Email = author.Email,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = null
         };
         _context.Authors.Add(authorEntity);
         await _context.SaveChangesAsync();
@@ -44,11 +42,7 @@ public class AuthorRepository : IAuthorRepository
     public async Task<AuthorDto?> Update(int id, AuthorDto author)
     {
         var authorEntity = new Author(author.Name, author.Surname, id, author.Email, null, DateTime.Now);
-        var attached = _context.Authors.Attach(authorEntity);
-        attached.Property(a => a.Name).IsModified = true;
-        attached.Property(a => a.Surname).IsModified = true;
-        attached.Property(a => a.Email).IsModified = true;
-        attached.Property(a => a.UpdatedAt).IsModified = true;
+        _context.Authors.Update(authorEntity);
         await _context.SaveChangesAsync();
 
         return author with { Id = id };
