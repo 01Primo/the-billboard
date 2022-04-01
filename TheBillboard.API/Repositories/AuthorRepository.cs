@@ -17,8 +17,9 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task<IEnumerable<AuthorDto>> GetAll()
     {
-        var result = _context.Author.Select(author => new AuthorDto(author));
-        return await result.ToListAsync();
+        // var result = _context.Author.Select(author => new AuthorDto(author));
+        var result = _context.Author.Select(AuthorDto.Cast);
+        return result;
     }
 
     public async Task<AuthorDto?> GetById(int id)

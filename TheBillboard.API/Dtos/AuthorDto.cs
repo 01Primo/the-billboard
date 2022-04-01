@@ -20,4 +20,9 @@ public record AuthorDto
     public AuthorDto(Author author)
         : this(author.Name, author.Surname, author.Mail, author.Id)
     { }
+
+    public static AuthorDto Cast(Author author)
+    {
+        return default;
+    }
 }
