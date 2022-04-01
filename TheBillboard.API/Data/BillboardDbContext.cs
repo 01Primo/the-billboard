@@ -18,7 +18,6 @@ public class BillboardDbContext : DbContext
     {
         var messages = modelBuilder.Entity<Message>();
         messages.Property(m => m.CreatedAt).IsRequired()
-            .ValueGeneratedOnAdd()
             .HasDefaultValueSql("getdate()")
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
 
@@ -29,7 +28,6 @@ public class BillboardDbContext : DbContext
 
         var authors = modelBuilder.Entity<Author>();
         authors.Property(a => a.CreatedAt).IsRequired()
-            .ValueGeneratedOnAdd()
             .HasDefaultValueSql("getdate()")
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
         authors.HasMany(a => a.Messages);
