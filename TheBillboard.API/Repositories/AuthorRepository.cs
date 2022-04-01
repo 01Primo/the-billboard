@@ -65,7 +65,10 @@ public class AuthorRepository : IAuthorRepository
     public async Task<AuthorDto> Update(AuthorDto author)
     {
         var newAuthor = new Author(author.Id, author.Name, author.Surname, author.Mail, UpdatedAt: DateTime.Now);
-        await _context.AddAsync(newAuthor);
+        _context.Entry(newAuthor).Property(p => p.Name).IsModified = true;
+        _context.Entry(newAuthor).Property(p => p.Surname).IsModified = true;
+        _context.Entry(newAuthor).Property(p => p.Mail).IsModified = true;
+        _context.Entry(newAuthor).Property(p => p.UpdatedAt).IsModified = true;
         await _context.SaveChangesAsync();        
         return new AuthorDto()
         {
@@ -78,11 +81,9 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task<bool> Delete(int id)
     {
-        var NewId = await _context.Author.SingleOrDefaultAsync(a => a.Id == id);
         var newAuthor = new Author(id);
         _context.Author.Remove(newAuthor);
-        _context.SaveChanges();
-
+        await _context.SaveChangesAsync();
         return true;
     }
 }
