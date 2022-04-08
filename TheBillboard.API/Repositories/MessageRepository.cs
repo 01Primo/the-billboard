@@ -3,107 +3,63 @@
 using Abstract;
 using Domain;
 using Dtos;
+using Microsoft.EntityFrameworkCore;
+using TheBillboard.API.Data;
 
 public class MessageRepository : IMessageRepository
 {
-    private readonly List<Message> _messages = new()
-    {
-        new()
-        {
-            Author = new Author()
-            {
-                Id = 1,
-                Name = "John",
-                Surname = "Doe",
-                Email = "john.dow.mail.com",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            },
-            Id = 1,
-            Title = "Hello",
-            Body = "Hello World!",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AuthorId = 1
-        },
-        new()
-        {
-            Author = new Author()
-            {
-                Id = 2,
-                Name = "Jane",
-                Surname = "Doe",
-                Email = "jane.doe.mail.com",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            },
-            Id = 2,
-            Title = "Hi",
-            Body = "Hi World!",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            AuthorId = 2
-        }
-    };
-    
-    private readonly IReader _reader;
-    
-    public MessageRepository(IReader reader)
-    {
-        _reader = reader;
-    }
-    public Task<IEnumerable<Message>> GetAll()
-    {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " +
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId";
+    private readonly BillboardDbContext _context;
 
-        return _reader.QueryAsync<Message>(query);
+    public MessageRepository(BillboardDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<Message>> GetAll()
+    {
+        return await _context.Messages.ToListAsync();
     }
 
     public async Task<Message?> GetById(int id)
     {
-        const string query = "SELECT M.Id," +
-                                " M.Title" +
-                                ", M.Body" +
-                                ", M.AuthorId" +
-                                ", A.Name" +
-                                ", A.Surname" +
-                                ", A.Mail as Email" +
-                                ", M.CreatedAt as MessageCreatedAt" +
-                                ", M.UpdatedAt as MessageUpdatedAt" +
-                                ", A.CreatedAt as AuthorCreatedAt" +
-                                " " + 
-                                "FROM Message M JOIN Author A                           ON A.Id = M.AuthorId" +
-                                " " +
-                                "WHERE M.Id=@Id";
-
-        return await _reader.GetByIdAsync<Message>(query, id);
+        return await _context.Messages.Include(m => m.Author).FirstOrDefaultAsync(m => m.Id == id);
     }
 
-    public MessageDto Create(MessageDto message)
+    public async Task<MessageDto?> Create(MessageDto message)
     {
-        var lastId = _messages.Max(m => m.Id);
-        var newId = (lastId ?? 0) + 1;
-        
-        var newMessage = new Message(newId, message.Title, message.Body, message.AuthorId, DateTime.Now, default);
-        _messages.Add(newMessage);
-        
-        return new MessageDto()
+        var messageEntity = new Message
         {
-            Title = newMessage.Title,
-            Body = newMessage.Body,
-            AuthorId = newMessage.AuthorId,
-            Id = newId
+            Title = message.Title,
+            Body = message.Body,
+            AuthorId = message.AuthorId,
         };
+
+        _context.Messages.Add(messageEntity);
+        await _context.SaveChangesAsync();
+
+        return message with { Id = messageEntity.Id };
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        _context.Messages.Remove(new Message() { Id = id });
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<MessageDto?> Update(int id, MessageDto message)
+    {
+        var messageEntity = new Message
+        {
+            Id = id,
+            Title = message.Title,
+            Body = message.Body,
+            AuthorId = message.AuthorId,
+            UpdatedAt = DateTime.Now
+        };
+        _context.Messages.Update(messageEntity);
+        await _context.SaveChangesAsync();
+
+        return message with { Id = id };
     }
 }

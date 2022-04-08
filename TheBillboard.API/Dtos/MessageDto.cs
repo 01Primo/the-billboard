@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class MessageDto
+public record MessageDto
 {
     [Required, StringLength(10)]
     public string Title { get; init; } = string.Empty;

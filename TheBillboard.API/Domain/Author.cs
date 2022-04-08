@@ -8,14 +8,8 @@ public record Author
     string? Email = "",
     DateTime? CreatedAt = null,
     DateTime? UpdatedAt = null
-)
+) : EntityBase(Id, CreatedAt, UpdatedAt)
 {
-    public Author(int id, string name, string surname, string? mail, DateTime? createdAt) : this(name, surname, id, mail, createdAt)
-    {
-    }
-
-    public override string ToString()
-    {
-        return Name + " " + Surname;
-    }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public ICollection<Message> Messages { get; set; } = null!;
 }
