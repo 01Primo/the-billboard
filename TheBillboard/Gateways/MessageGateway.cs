@@ -6,12 +6,13 @@ using Models;
 
 public class MessageGateway : IMessageGateway
 {
-    private readonly IReader _reader;
+    private readonly IReader _reader1234;
     private readonly IWriter _writer;
+    private const int COSTANTE = 1;
 
-    public MessageGateway(IReader reader, IWriter writer)
+    public MessageGateway(IReader reader1234, IWriter writer)
     {
-        _reader = reader;
+        _reader1234 = reader1234;
         _writer = writer;
     }
 
@@ -22,7 +23,7 @@ public class MessageGateway : IMessageGateway
                                FROM Message M JOIN Author A
                                ON A.Id = M.AuthorId";
 
-        return _reader.QueryAsync(query, MapMessage);
+        return _reader1234.QueryAsync(query, MapMessage);
     }
 
     public async Task<Message?> GetById(int id)
@@ -44,7 +45,7 @@ public class MessageGateway : IMessageGateway
                                 " " +
                                 "WHERE M.Id=@Id";
 
-        return await _reader.GetByIdAsync<Message>(query, id);
+        return await _reader1234.GetByIdAsync<Message>(query, id);
     }
 
     public Task<bool> Create(Message message)
